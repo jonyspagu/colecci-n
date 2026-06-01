@@ -354,6 +354,9 @@ const GIGA = [
   ["Articuno",144],["Zapdos",145],["Moltres",146],["Dratini",147],["Dragonair",148],["Dragonite",149],
   ["Mewtwo",150],["Mew",151]
 ].map(([n,i])=>({id:`gi_${i}`,name:n,num:`Gigantazo #${i}`,img:PA(i)}));
+const PK3_TROQ = Array.from({length:64},(_,i)=>({id:`pk3t_${i+1}`,name:`Troquelada #${i+1}`,num:`Armable #${i+1}`,holo:true}));
+const PK3_NORM = Array.from({length:183},(_,i)=>({id:`pk3n_${i+1}`,name:`Figurita #${i+1}`,num:`#${i+1}`}));
+
 const LENTI = [
   {id:'le_1', name:'Bulbasaur',  num:'#01 · Bulbasaur↔Ivysaur↔Venusaur',        img:PA(1),   holo:true},
   {id:'le_2', name:'Charmander', num:'#02 · Charmander↔Charmeleon↔Charizard',   img:PA(4),   holo:true},
@@ -551,6 +554,7 @@ const FRANCHISES = {
       giga:      {label:"Gigantazos",   icon:"🔴"},
       poke1:     {label:"Álbum 1",      icon:"📗"},
       poke2:     {label:"Álbum 2",      icon:"📘"},
+      poke3:     {label:"Álbum 3",      icon:"📙"},
     }
   },
   dbz: {
@@ -584,6 +588,7 @@ const COLS = {
   giga:{label:"Pokémon · Gigantazos"},
   poke1:{label:"Pokémon · Álbum 1"},
   poke2:{label:"Pokémon · Álbum 2 (210 fig + 8 doradas + 23 transp)"},
+  poke3:{label:"Pokémon · Álbum 3 Gold & Silver"},
   sp:{label:"Dragon Ball · Sobre Plateado"},
 };
 
@@ -784,6 +789,10 @@ function getItems(sub, alb){
   if(sub==='poke1')    return [
     {l:'8 Holos Especiales Brillantes',items:PK1_HOLOS.map(it=>({...it,img:HOLO_REAL[it.id]||null}))},
     {l:'151 Figuritas Normales',items:PKM151.map(([n,i])=>({id:`pk1_${i}`,name:n,num:`#${String(i).padStart(3,'0')}`,img:PA(i)}))}
+  ];
+  if(sub==='poke3') return [
+    {l:'64 Troqueladas Armables',items:PK3_TROQ},
+    {l:'183 Figuritas Normales',items:PK3_NORM}
   ];
   if(sub==='poke2') return [
     {l:'8 Figuritas Doradas · Medallas de la Liga',items:PK2_HOLOS.slice(0,8).map(it=>({...it,img:HOLO_REAL[it.id]||null}))},
