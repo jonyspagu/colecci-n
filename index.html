@@ -594,8 +594,7 @@ function load(){
             localStorage.setItem('mc4_local', JSON.stringify(ST));
             localStorage.setItem('mc4_preloaded','1');
             render();
-            fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},
-              body:JSON.stringify({action:'setAll',state:ST})})
+            fetch(API+'?action=setAll&state='+encodeURIComponent(JSON.stringify(ST)))
               .then(r=>r.json()).then(d=>{
                 if(d.ok) showSyncStatus('✓ '+Object.keys(preset).length+' postales cargadas');
                 setTimeout(()=>showSyncStatus(''),2500);
