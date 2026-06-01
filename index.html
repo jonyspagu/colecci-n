@@ -580,11 +580,22 @@ function load(){
         const sheetsData = d.data||{};
         const sheetsCount = Object.keys(sheetsData).filter(k=>sheetsData[k]).length;
         if(sheetsCount > 0){
-          // Sheets has data — use it as source of truth
-          ST = sheetsData;
+          // Merge: Sheets wins over local (Sheets is source of truth)
+          // But also push any local items not in Sheets back up
+          const localData = JSON.parse(localStorage.getItem('mc4_local')||'{}');
+          const merged = Object.assign({}, localData, sheetsData);
+          ST = merged;
           localStorage.setItem('mc4_local', JSON.stringify(ST));
+          // Push merged state back to Sheets if local had extra items
+          const localKeys = Object.keys(localData).filter(k=>localData[k]);
+          const sheetsKeys = Object.keys(sheetsData).filter(k=>sheetsData[k]);
+          const hasExtra = localKeys.some(k=>!sheetsData.hasOwnProperty(k));
+          if(hasExtra){
+            fetch(API+'?action=setAll&state='+encodeURIComponent(JSON.stringify(ST)))
+              .catch(()=>{});
+          }
           render();
-          showSyncStatus('✓ Sincronizado ('+sheetsCount+' marcadas)');
+          showSyncStatus('✓ Sincronizado ('+Object.keys(ST).filter(k=>ST[k]).length+' marcadas)');
           setTimeout(()=>showSyncStatus(''),2500);
         } else {
           // Sheets empty — push local preset (postales) up
