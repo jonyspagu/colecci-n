@@ -136,6 +136,9 @@ tr.have .row-name{color:var(--text)}
 .btn-clear{background:none;border:1px solid rgba(239,68,68,.4);color:#fca5a5;border-radius:6px;padding:7px 14px;font-family:'Barlow Condensed',sans-serif;font-size:12px;cursor:pointer;margin-right:auto}
 
 @media(max-width:500px){.grid{grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:6px}.mtab{font-size:12px;padding:6px 10px}}
+.readonly-banner{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);border-radius:8px;padding:7px 14px;font-size:11px;color:#93c5fd;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.readonly-btn{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.8px;border-radius:20px;padding:4px 12px;cursor:pointer;border:none;transition:all .15s}
+
 
 /* ALBUM VIEW */
 .album-page {
@@ -229,9 +232,10 @@ tr.have .row-name{color:var(--text)}
   <div class="hdr-top" style="position:relative">
     <div class="app-title">⬡ MI COLECCIÓN</div>
     <div style="display:flex;align-items:center;gap:8px">
-    <div id="syncStatus" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--text3);letter-spacing:.5px"></div>
-    <div class="total-badge" id="totalBadge">— / —</div>
-  </div>
+      <div id="syncStatus" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--text3);letter-spacing:.5px"></div>
+      <button id="readOnlyBtn" onclick="toggleReadOnly()" class="readonly-btn" style="background:var(--bg3);color:var(--text3);border:1px solid var(--border)">👁 Solo ver</button>
+      <div class="total-badge" id="totalBadge">— / —</div>
+    </div>
   </div>
   <div class="main-tabs" id="mainTabs"></div>
   <div class="sub-tabs-wrap"><div class="sub-tabs" id="subTabs"></div></div>
@@ -259,6 +263,7 @@ tr.have .row-name{color:var(--text)}
     </div>
   </div>
   <div id="feriaBar" style="display:none" class="feria-bar"><div class="dot"></div>MODO FERIA — solo lo que te falta</div>
+  <div id="readonlyBanner" style="display:none" class="readonly-banner">👁 MODO SOLO LECTURA — compartí esta página sin que puedan modificar tu colección · <a href="?" style="color:#93c5fd;font-size:10px">Salir</a></div>
   <div id="albTabs" style="display:none"><div class="alb-tabs-inner" id="albTabsInner"></div></div>
   <div id="content"></div>
 </div>
@@ -576,7 +581,7 @@ const COLS = {
 
 // ===== STATE =====
 const API = "https://script.google.com/macros/s/AKfycbz4laUw4faQKEzRd5riXR9JfXk1-WvWZ06hj-KvIAC_5UpnI_lIm25kKcnd6CNIV88n/exec";
-let ST={},CUS={},curFr='poke',curSub='postales',curAlb=null,fil='all',q='',editId=null,viewMode='grid';
+let ST={},CUS={},curFr='poke',curSub='postales',curAlb=null,fil='all',q='',editId=null,viewMode='grid',readOnly=false;
 let syncing=false,pendingSync=[];
 
 function load(){
@@ -613,6 +618,30 @@ function load(){
       }
     })
     .catch(()=>showSyncStatus('⚠ Sin conexión'));
+}
+
+function toggleReadOnly(){
+  readOnly=!readOnly;
+  const btn=document.getElementById('readOnlyBtn');
+  const banner=document.getElementById('readonlyBanner');
+  if(readOnly){
+    btn.style.background='rgba(59,130,246,.2)';
+    btn.style.color='#93c5fd';
+    btn.style.borderColor='#3b82f6';
+    btn.textContent='✏️ Editar';
+    if(banner) banner.style.display='flex';
+  } else {
+    btn.style.background='var(--bg3)';
+    btn.style.color='var(--text3)';
+    btn.style.borderColor='var(--border)';
+    btn.textContent='👁 Solo ver';
+    if(banner) banner.style.display='none';
+  }
+}
+
+// Auto-detect ?readonly=1 in URL
+if(window.location.search.includes('readonly=1')){
+  document.addEventListener('DOMContentLoaded',()=>toggleReadOnly());
 }
 
 function setView(v){
@@ -1149,6 +1178,7 @@ function buildMainTabs(){
 }
 
 load();buildMainTabs();setFr('poke');
+if(window.location.search.includes('readonly=1')){toggleReadOnly();}
 </script>
 </body>
 </html>
