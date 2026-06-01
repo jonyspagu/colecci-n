@@ -573,7 +573,7 @@ function load(){
   render();
   // Always sync from Google Sheets — Sheets is the source of truth
   showSyncStatus('⟳ Sincronizando...');
-  fetch(API+'?action=getAll')
+  fetch(API+'?action=getAll', {redirect:'follow'})
     .then(r=>r.json())
     .then(d=>{
       if(d.ok){
