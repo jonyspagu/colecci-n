@@ -6,7 +6,7 @@
 <title>Mi Colección</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0a0a0f;--bg2:#111118;--bg3:#1a1a24;--gold:#c9a84c;--gold2:#e8c96a;--gold-dim:#7a6230;--text:#e8e4d8;--text2:#9a9588;--text3:#5a5650;--border:#2a2830;--border2:#3a3650;--holo:linear-gradient(135deg,#c084fc,#818cf8,#38bdf8,#34d399,#facc15,#f472b6,#c084fc);--r:10px;--poke:#dc2626;--dbz:#ea580c;--cdz:#2563eb;--sp:#9333ea}
+:root{--bg:#0a0a0f;--bg2:#111118;--bg3:#1a1a24;--gold:#c9a84c;--gold2:#e8c96a;--gold-dim:#7a6230;--text:#e8e4d8;--text2:#9a9588;--text3:#5a5650;--border:#2a2830;--border2:#3a3650;--holo:linear-gradient(135deg,#c084fc,#818cf8,#38bdf8,#34d399,#facc15,#f472b6,#c084fc);--r:10px;--poke:#f5c518;--dbz:#ea580c;--cdz:#2563eb;--sp:#9333ea}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh}
 
@@ -37,8 +37,8 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .sub-tabs-wrap{overflow-x:auto;scrollbar-width:none;margin-top:10px}
 .sub-tabs-wrap::-webkit-scrollbar{display:none}
 .sub-tabs{display:flex;gap:3px;min-width:max-content}
-.stab{background:none;border:none;cursor:pointer;padding:4px 12px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.8px;color:var(--text3);border-radius:5px;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;text-transform:uppercase}
-.stab:hover{color:var(--text2)}
+.stab{background:none;border:none;cursor:pointer;padding:4px 12px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.8px;color:#6a7890;border-radius:5px;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;text-transform:uppercase}
+.stab:hover{color:#c8c4b8}
 .stab.active{color:var(--gold);border-bottom-color:var(--gold)}
 
 .main{padding:14px;max-width:960px;margin:0 auto}
@@ -74,7 +74,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 /* SECTION TITLE */
 .sec-title{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:3px;margin:14px 0 8px;display:flex;align-items:center;gap:8px}
 .holo-t{color:transparent;background:var(--holo);-webkit-background-clip:text;background-clip:text;background-size:200%;animation:shimmer 4s linear infinite}
-.norm-t{color:var(--text3)}
+.norm-t{color:#6a7890}
 @keyframes shimmer{0%{background-position:0%}100%{background-position:200%}}
 .sec-line{flex:1;height:1px}
 .holo-t .sec-line{background:linear-gradient(90deg,var(--gold-dim),transparent)}
@@ -97,25 +97,25 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .card.have .chk{background:var(--gold);border-color:var(--gold2);color:#0a0a0f}
 .card.holo-c.have .chk{background:#8b5cf6;border-color:#a78bfa;color:#fff}
 .card-info{padding:6px 7px}
-.card-name{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;line-height:1.3;color:var(--text2)}
-.card.have .card-name{color:var(--text)}
-.card-num{font-size:9px;color:var(--text3);margin-top:1px;font-family:'Barlow Condensed',sans-serif}
+.card-name{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;line-height:1.3;color:#b8b4a8}
+.card.have .card-name{color:#fff}
+.card-num{font-size:10px;color:#6a7890;margin-top:2px;font-family:'Barlow Condensed',sans-serif;font-weight:600}
 .edit-img-btn{position:absolute;bottom:4px;left:4px;background:rgba(0,0,0,.7);border:1px solid var(--border2);color:var(--text3);font-size:9px;padding:2px 5px;border-radius:4px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;z-index:2}
 .edit-img-btn:hover{color:var(--gold)}
 
 /* TABLE */
 .tbl-wrap{overflow-x:auto}
 table.figs{width:100%;border-collapse:collapse;font-size:12px}
-table.figs th{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1px;color:var(--text3);text-transform:uppercase;padding:6px 8px;border-bottom:1px solid var(--border);text-align:left}
-table.figs td{padding:5px 8px;border-bottom:1px solid var(--border);vertical-align:middle;cursor:pointer;transition:background .1s}
-table.figs tr:hover td{background:var(--bg2)}
-table.figs tr.have td{background:rgba(201,168,76,.04)}
-table.figs tr.have td:first-child{border-left:2px solid var(--gold-dim)}
-.row-chk{width:22px;height:22px;border-radius:50%;background:var(--bg3);border:1.5px solid var(--border2);display:inline-flex;align-items:center;justify-content:center;font-size:10px}
-tr.have .row-chk{background:var(--gold);border-color:var(--gold2);color:#0a0a0f}
-.row-name{color:var(--text2);font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px}
-tr.have .row-name{color:var(--text)}
-.row-num{color:var(--text3);font-size:11px;font-family:'Barlow Condensed',sans-serif;white-space:nowrap}
+table.figs th{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1px;color:#8a9bb5;text-transform:uppercase;padding:8px 10px;border-bottom:1px solid #2a2840;text-align:left;background:#13131c}
+table.figs td{padding:7px 10px;border-bottom:1px solid #1e1e2e;vertical-align:middle;cursor:pointer;transition:background .1s}
+table.figs tr:hover td{background:#1a1a2a}
+table.figs tr.have td{background:rgba(201,168,76,.07)}
+table.figs tr.have td:first-child{border-left:3px solid var(--gold)}
+.row-chk{width:24px;height:24px;border-radius:50%;background:#1a1a2a;border:1.5px solid #3a3650;display:inline-flex;align-items:center;justify-content:center;font-size:11px}
+tr.have .row-chk{background:var(--gold);border-color:var(--gold2);color:#0a0a0f;font-weight:700}
+.row-name{color:#d4d0c8;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px}
+tr.have .row-name{color:#fff}
+.row-num{color:#6a7890;font-size:12px;font-family:'Barlow Condensed',sans-serif;white-space:nowrap;font-weight:600}
 
 /* FERIA */
 .feria-bar{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:7px;padding:6px 12px;font-size:11px;color:#fca5a5;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
@@ -245,7 +245,7 @@ tr.have .row-name{color:var(--text)}
   <div class="stats-bar">
     <div class="stats-row">
       <div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1px;color:var(--text3);text-transform:uppercase">Progreso</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1px;color:#8a9bb5;text-transform:uppercase;font-weight:700">Progreso</div>
         <div class="stat-nums" id="statNums">0 <span>/ 0</span></div>
       </div>
       <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
@@ -929,7 +929,7 @@ function countSection(sub,alb){
 }
 
 function frColor(fr){
-  return fr==='poke'?'#dc2626':fr==='dbz'?'#ea580c':fr==='cdz'?'#2563eb':'#9333ea';
+  return fr==='poke'?'#f5c518':fr==='dbz'?'#ea580c':fr==='cdz'?'#2563eb':'#9333ea';
 }
 
 function renderStats(){
@@ -1034,7 +1034,7 @@ function renderFeria(){
   
   for(const opt of frOptions){
     const isActive = feriaFilter === opt.key;
-    const col = opt.key==='poke'?'#dc2626':opt.key==='dbz'?'#ea580c':opt.key==='cdz'?'#2563eb':opt.key==='sp'?'#9333ea':'var(--gold)';
+    const col = opt.key==='poke'?'#f5c518':opt.key==='dbz'?'#ea580c':opt.key==='cdz'?'#2563eb':opt.key==='sp'?'#9333ea':'var(--gold)';
     filterHtml += `<button onclick="feriaFilter='${opt.key}';renderFeria()" style="background:${isActive?col+'22':'var(--bg2)'};border:1px solid ${isActive?col:'var(--border)'};color:${isActive?col:'var(--text3)'};border-radius:20px;padding:4px 12px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.5px;cursor:pointer">${opt.label}</button>`;
   }
   
