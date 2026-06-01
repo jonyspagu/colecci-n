@@ -911,19 +911,15 @@ function render(){
 // ===== STATS =====
 function getAllSections(){
   const sections=[];
-  // Pokémon
-  sections.push({fr:'poke',label:'Pokémon · Postales',       sub:'postales',   alb:null});
-  sections.push({fr:'poke',label:'Pokémon · Tazos 1',        sub:'tazos1',     alb:null});
-  sections.push({fr:'poke',label:'Pokémon · Tazos 2',        sub:'tazos2',     alb:null});
-  sections.push({fr:'poke',label:'Pokémon · Lenticulares',   sub:'lenti',      alb:null});
-  sections.push({fr:'poke',label:'Pokémon · Gigantazos',     sub:'giga',       alb:null});
-  sections.push({fr:'poke',label:'Pokémon · Álbum 1',        sub:'poke1',      alb:null});
-  sections.push({fr:'poke',label:'Pokémon · Álbum 2',        sub:'poke2',      alb:null});
-  // DBZ albums
-  Object.keys(DDAT).forEach(a=>sections.push({fr:'dbz',label:`Dragon Ball · ${a}`,sub:'dbz_albums',alb:a}));
-  sections.push({fr:'dbz',label:'Dragon Ball · Sobre Plateado',sub:'sp',alb:null});
-  // CDZ
-  Object.keys(CDAT).forEach(a=>sections.push({fr:'cdz',label:`CDZ · ${a}`,sub:'cdz_albums',alb:a}));
+  sections.push({fr:'poke',label:'Pokémon · Postales · 138 cartas',                    sub:'postales', alb:null});
+  sections.push({fr:'poke',label:'Pokémon · Tazos Serie 1 · 51 tazos (Frenchitas)',    sub:'tazos1',   alb:null});
+  sections.push({fr:'poke',label:'Pokémon · Movi-Tazos 3D · 30 lenticulares',          sub:'lenti',    alb:null});
+  sections.push({fr:'poke',label:'Pokémon · Gigantazos · 100 tazos (#52 al #151)',      sub:'giga',     alb:null});
+  sections.push({fr:'poke',label:'Pokémon · Álbum 1 (1999 Navarrete) · ¡Atrápalo Ya!', sub:'poke1',    alb:null});
+  sections.push({fr:'poke',label:'Pokémon · Álbum 2 (2000 Navarrete) · Medallas Liga',  sub:'poke2',    alb:null});
+  Object.keys(DDAT).forEach(a=>sections.push({fr:'dbz',label:DDAT[a].label+' — '+DDAT[a].saga, sub:'dbz_albums', alb:a}));
+  sections.push({fr:'dbz',label:'Dragon Ball · Sobre Plateado (1999) · Muñecos y Tarjetas', sub:'sp', alb:null});
+  Object.keys(CDAT).forEach(a=>sections.push({fr:'cdz',label:CDAT[a].label+' — '+CDAT[a].saga, sub:'cdz_albums', alb:a}));
   return sections;
 }
 
