@@ -584,41 +584,52 @@ const API = "https://script.google.com/macros/s/AKfycbz4laUw4faQKEzRd5riXR9JfXk1
 let ST={},CUS={},curFr='poke',curSub='postales',curAlb=null,fil='all',q='',editId=null,viewMode='grid',readOnly=false;
 let syncing=false,pendingSync=[];
 
+const POSTALES_PRESET = {"po_1": true, "po_3": true, "po_6": true, "po_7": true, "po_8": true, "po_9": true, "po_10": true, "po_11": true, "po_12": true, "po_13": true, "po_15": true, "po_17": true, "po_18": true, "po_19": true, "po_20": true, "po_21": true, "po_22": true, "po_23": true, "po_24": true, "po_25": true, "po_26": true, "po_29": true, "po_30": true, "po_31": true, "po_33": true, "po_34": true, "po_35": true, "po_36": true, "po_37": true, "po_38": true, "po_39": true, "po_40": true, "po_42": true, "po_43": true, "po_44": true, "po_45": true, "po_46": true, "po_47": true, "po_48": true, "po_49": true, "po_50": true, "po_51": true, "po_52": true, "po_54": true, "po_55": true, "po_56": true, "po_57": true, "po_58": true, "po_59": true, "po_60": true, "po_63": true, "po_64": true, "po_65": true, "po_66": true, "po_67": true, "po_68": true, "po_69": true, "po_70": true, "po_71": true, "po_72": true, "po_73": true, "po_74": true, "po_75": true, "po_76": true, "po_77": true, "po_78": true, "po_79": true, "po_82": true, "po_83": true, "po_85": true, "po_87": true, "po_88": true, "po_89": true, "po_90": true, "po_91": true, "po_92": true, "po_93": true, "po_94": true, "po_95": true, "po_96": true, "po_97": true, "po_98": true, "po_100": true, "po_101": true, "po_102": true, "po_103": true, "po_105": true, "po_106": true, "po_107": true, "po_108": true, "po_109": true, "po_110": true, "po_112": true, "po_113": true, "po_114": true, "po_116": true, "po_117": true, "po_118": true, "po_119": true, "po_120": true, "po_121": true, "po_122": true, "po_123": true, "po_124": true, "po_125": true, "po_126": true, "po_127": true, "po_128": true, "po_129": true, "po_130": true, "po_131": true, "po_132": true, "po_134": true, "po_135": true, "po_136": true, "po_137": true, "po_138": true};
+
 function load(){
   try{CUS=JSON.parse(localStorage.getItem('mc4_imgs')||'{}')}catch(e){CUS={}}
-  // Load local state
+  // Load local state for instant render
   try{ST=JSON.parse(localStorage.getItem('mc4_local')||'{}')}catch(e){ST={}}
-  // First time: inject pre-marked postales
-  if(!localStorage.getItem('mc4_preloaded')){
-    const preset={"po_1": true, "po_3": true, "po_6": true, "po_7": true, "po_8": true, "po_9": true, "po_10": true, "po_11": true, "po_12": true, "po_13": true, "po_15": true, "po_17": true, "po_18": true, "po_19": true, "po_20": true, "po_21": true, "po_22": true, "po_23": true, "po_24": true, "po_25": true, "po_26": true, "po_29": true, "po_30": true, "po_31": true, "po_33": true, "po_34": true, "po_35": true, "po_36": true, "po_37": true, "po_38": true, "po_39": true, "po_40": true, "po_42": true, "po_43": true, "po_44": true, "po_45": true, "po_46": true, "po_47": true, "po_48": true, "po_49": true, "po_50": true, "po_51": true, "po_52": true, "po_54": true, "po_55": true, "po_56": true, "po_57": true, "po_58": true, "po_59": true, "po_60": true, "po_63": true, "po_64": true, "po_65": true, "po_66": true, "po_67": true, "po_68": true, "po_69": true, "po_70": true, "po_71": true, "po_72": true, "po_73": true, "po_74": true, "po_75": true, "po_76": true, "po_77": true, "po_78": true, "po_79": true, "po_82": true, "po_83": true, "po_85": true, "po_87": true, "po_88": true, "po_89": true, "po_90": true, "po_91": true, "po_92": true, "po_93": true, "po_94": true, "po_95": true, "po_96": true, "po_97": true, "po_98": true, "po_100": true, "po_101": true, "po_102": true, "po_103": true, "po_105": true, "po_106": true, "po_107": true, "po_108": true, "po_109": true, "po_110": true, "po_112": true, "po_113": true, "po_114": true, "po_116": true, "po_117": true, "po_118": true, "po_119": true, "po_120": true, "po_121": true, "po_122": true, "po_123": true, "po_124": true, "po_125": true, "po_126": true, "po_127": true, "po_128": true, "po_129": true, "po_130": true, "po_131": true, "po_132": true, "po_134": true, "po_135": true, "po_136": true, "po_137": true, "po_138": true};
-    Object.assign(ST, preset);
-    localStorage.setItem('mc4_local', JSON.stringify(ST));
-    localStorage.setItem('mc4_preloaded','1');
-  }
   render();
-  // Sync from Google Sheets in background
+  // Always sync from Google Sheets — Sheets is the source of truth
   showSyncStatus('⟳ Sincronizando...');
   fetch(API+'?action=getAll')
     .then(r=>r.json())
     .then(d=>{
-      if(d.ok && Object.keys(d.data||{}).length > 0){
-        ST=d.data;
-        localStorage.setItem('mc4_local', JSON.stringify(ST));
-        render();
-        showSyncStatus('✓ Sincronizado');
-        setTimeout(()=>showSyncStatus(''),2000);
-      } else {
-        // First time on Sheets — push local state up
-        const localState=JSON.parse(localStorage.getItem('mc4_local')||'{}');
-        if(Object.keys(localState).length>0){
-          fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({action:'setAll',state:localState})})
-            .then(r=>r.json()).then(d=>{if(d.ok){showSyncStatus('✓ Subido a Sheets');setTimeout(()=>showSyncStatus(''),2000);}});
+      if(d.ok){
+        const sheetsData = d.data||{};
+        const sheetsCount = Object.keys(sheetsData).filter(k=>sheetsData[k]).length;
+        if(sheetsCount > 0){
+          // Sheets has data — use it as source of truth
+          ST = sheetsData;
+          localStorage.setItem('mc4_local', JSON.stringify(ST));
+          render();
+          showSyncStatus('✓ Sincronizado ('+sheetsCount+' marcadas)');
+          setTimeout(()=>showSyncStatus(''),2500);
+        } else {
+          // Sheets empty — push local preset (postales) up
+          if(!localStorage.getItem('mc4_preloaded')){
+            const preset=POSTALES_PRESET;
+            Object.assign(ST, preset);
+            localStorage.setItem('mc4_local', JSON.stringify(ST));
+            localStorage.setItem('mc4_preloaded','1');
+            render();
+            fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},
+              body:JSON.stringify({action:'setAll',state:ST})})
+              .then(r=>r.json()).then(d=>{
+                if(d.ok) showSyncStatus('✓ '+Object.keys(preset).length+' postales cargadas');
+                setTimeout(()=>showSyncStatus(''),2500);
+              });
+          } else {
+            showSyncStatus('✓ Local');
+            setTimeout(()=>showSyncStatus(''),1500);
+          }
         }
       }
     })
-    .catch(()=>showSyncStatus('⚠ Sin conexión'));
+    .catch(()=>showSyncStatus('⚠ Sin conexión — cambios guardados local'));
 }
+
 
 function toggleReadOnly(){
   readOnly=!readOnly;
