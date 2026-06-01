@@ -400,14 +400,37 @@ const PK1_NORM = [...PKM151.slice(0,151).map(([n,i])=>({id:`pk1_${i}`,name:n,num
   ...Array.from({length:57},(_,i)=>({id:`pk1e_${i}`,name:`Escena #${i+1}`,num:`E${i+1}`}))];
 
 const PK2_HOLOS = [
-  {id:'PK2_hA',name:'Medalla Roca',      num:'Holo A',holo:true},
-  {id:'PK2_hB',name:'Medalla Trueno',    num:'Holo B',holo:true},
-  {id:'PK2_hC',name:'Medalla Arco Iris', num:'Holo C',holo:true},
-  {id:'PK2_hD',name:'Medalla Volcán',    num:'Holo D',holo:true},
-  {id:'PK2_hE',name:'Medalla Cascada',   num:'Holo E',holo:true},
-  {id:'PK2_hF',name:'Medalla Alma',      num:'Holo F',holo:true},
-  {id:'PK2_hG',name:'Medalla Pantano',   num:'Holo G',holo:true},
-  {id:'PK2_hH',name:'Medalla Tierra',    num:'Holo H',holo:true},
+  {id:'PK2_hA',name:'Medalla Roca',      num:'Dorada A',holo:true},
+  {id:'PK2_hB',name:'Medalla Trueno',    num:'Dorada B',holo:true},
+  {id:'PK2_hC',name:'Medalla Arco Iris', num:'Dorada C',holo:true},
+  {id:'PK2_hD',name:'Medalla Volcán',    num:'Dorada D',holo:true},
+  {id:'PK2_hE',name:'Medalla Cascada',   num:'Dorada E',holo:true},
+  {id:'PK2_hF',name:'Medalla Alma',      num:'Dorada F',holo:true},
+  {id:'PK2_hG',name:'Medalla Pantano',   num:'Dorada G',holo:true},
+  {id:'PK2_hH',name:'Medalla Tierra',    num:'Dorada H',holo:true},
+  {id:'PK2_tA',name:'Transparente A',    num:'Transparente A',holo:true},
+  {id:'PK2_tB',name:'Transparente B',    num:'Transparente B',holo:true},
+  {id:'PK2_tC',name:'Transparente C',    num:'Transparente C',holo:true},
+  {id:'PK2_tD',name:'Transparente D',    num:'Transparente D',holo:true},
+  {id:'PK2_tE',name:'Transparente E',    num:'Transparente E',holo:true},
+  {id:'PK2_tF',name:'Transparente F',    num:'Transparente F',holo:true},
+  {id:'PK2_tG',name:'Transparente G',    num:'Transparente G',holo:true},
+  {id:'PK2_tH',name:'Transparente H',    num:'Transparente H',holo:true},
+  {id:'PK2_tI',name:'Transparente I',    num:'Transparente I',holo:true},
+  {id:'PK2_tJ',name:'Transparente J',    num:'Transparente J',holo:true},
+  {id:'PK2_tK',name:'Transparente K',    num:'Transparente K',holo:true},
+  {id:'PK2_tL',name:'Transparente L',    num:'Transparente L',holo:true},
+  {id:'PK2_tM',name:'Transparente M',    num:'Transparente M',holo:true},
+  {id:'PK2_tN',name:'Transparente N',    num:'Transparente N',holo:true},
+  {id:'PK2_tO',name:'Transparente O',    num:'Transparente O',holo:true},
+  {id:'PK2_tP',name:'Transparente P',    num:'Transparente P',holo:true},
+  {id:'PK2_tQ',name:'Transparente Q',    num:'Transparente Q',holo:true},
+  {id:'PK2_tR',name:'Transparente R',    num:'Transparente R',holo:true},
+  {id:'PK2_tS',name:'Transparente S',    num:'Transparente S',holo:true},
+  {id:'PK2_tT',name:'Transparente T',    num:'Transparente T',holo:true},
+  {id:'PK2_tU',name:'Transparente U',    num:'Transparente U',holo:true},
+  {id:'PK2_tV',name:'Transparente V',    num:'Transparente V',holo:true},
+  {id:'PK2_tW',name:'Transparente W',    num:'Transparente W',holo:true},
 ];
 const PK2_NORM  = JOHTO.map(([n,i])=>({id:`pk2_${i}`,name:n,num:`#${String(i).padStart(3,'0')}`,img:PA(i)}));
 
@@ -560,7 +583,7 @@ const COLS = {
   lenti:{label:"Pokémon · Lenticulares 3D"},
   giga:{label:"Pokémon · Gigantazos"},
   poke1:{label:"Pokémon · Álbum 1"},
-  poke2:{label:"Pokémon · Álbum 2"},
+  poke2:{label:"Pokémon · Álbum 2 (210 fig + 8 doradas + 23 transp)"},
   sp:{label:"Dragon Ball · Sobre Plateado"},
 };
 
@@ -762,9 +785,10 @@ function getItems(sub, alb){
     {l:'8 Holos Especiales Brillantes',items:PK1_HOLOS.map(it=>({...it,img:HOLO_REAL[it.id]||null}))},
     {l:'151 Figuritas Normales',items:PKM151.map(([n,i])=>({id:`pk1_${i}`,name:n,num:`#${String(i).padStart(3,'0')}`,img:PA(i)}))}
   ];
-  if(sub==='poke2')    return [
-    {l:'8 Holos Especiales Brillantes · Medallas de la Liga',items:PK2_HOLOS.map(it=>({...it,img:HOLO_REAL[it.id]||null}))},
-    {l:'Figuritas Normales · Johto',items:JOHTO.map(([n,i])=>({id:`pk2_${i}`,name:n,num:`#${String(i).padStart(3,'0')}`,img:PA(i)}))}
+  if(sub==='poke2') return [
+    {l:'8 Figuritas Doradas · Medallas de la Liga',items:PK2_HOLOS.slice(0,8).map(it=>({...it,img:HOLO_REAL[it.id]||null}))},
+    {l:'23 Figuritas Transparentes',items:PK2_HOLOS.slice(8)},
+    {l:'210 Figuritas Normales · Johto',items:JOHTO.map(([n,i])=>({id:`pk2_${i}`,name:n,num:`#${String(i).padStart(3,'0')}`,img:PA(i)}))}
   ];
   if(sub==='sp')       return [{l:'Muñecos · 36 piezas',items:SP_M},{l:'Tarjetas · 18 piezas',items:SP_T}];
   if(sub==='dbz_albums'){
