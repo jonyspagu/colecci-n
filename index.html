@@ -575,7 +575,7 @@ function load(){
   try{CUS=JSON.parse(localStorage.getItem('mc4_imgs')||'{}')}catch(e){CUS={}}
   // Load local state for instant render
   try{ST=JSON.parse(localStorage.getItem('mc4_local')||'{}')}catch(e){ST={}}
-  render();
+  renderCurrent();
   // Always sync from Google Sheets — Sheets is the source of truth
   showSyncStatus('⟳ Sincronizando...');
   fetch(API+'?action=getAll', {redirect:'follow'})
@@ -599,7 +599,7 @@ function load(){
             fetch(API+'?action=setAll&state='+encodeURIComponent(JSON.stringify(ST)))
               .catch(()=>{});
           }
-          render();
+          renderCurrent();
           showSyncStatus('✓ Sincronizado ('+Object.keys(ST).filter(k=>ST[k]).length+' marcadas)');
           setTimeout(()=>showSyncStatus(''),2500);
         } else {
@@ -609,7 +609,7 @@ function load(){
             Object.assign(ST, preset);
             localStorage.setItem('mc4_local', JSON.stringify(ST));
             localStorage.setItem('mc4_preloaded','1');
-            render();
+            renderCurrent();
             fetch(API+'?action=setAll&state='+encodeURIComponent(JSON.stringify(ST)))
               .then(r=>r.json()).then(d=>{
                 if(d.ok) showSyncStatus('✓ '+Object.keys(preset).length+' postales cargadas');
@@ -658,7 +658,7 @@ function setView(v){
   document.getElementById('viewAlbum').style.background=v==='album'?'rgba(201,168,76,.15)':'var(--bg2)';
   document.getElementById('viewAlbum').style.borderColor=v==='album'?'var(--gold)':'var(--border)';
   document.getElementById('viewAlbum').style.color=v==='album'?'var(--gold)':'var(--text3)';
-  render();
+  renderCurrent();
 }
 
 function renderAlbumSlot(it){
@@ -677,6 +677,12 @@ function renderAlbumSlot(it){
     </div>
     <div class="alb-num">${it.num||it.name}</div>
   </div>`;
+}
+
+function renderCurrent(){
+  if(curFr==='stats') renderStats();
+  else if(curFr==='feria') renderFeria();
+  else render();
 }
 
 function showSyncStatus(msg){
