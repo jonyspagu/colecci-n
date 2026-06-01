@@ -28,9 +28,10 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .mtab.dbz:not(.active):hover{color:#fed7aa;border-color:var(--dbz)}
 .mtab.cdz:not(.active):hover{color:#bfdbfe;border-color:var(--cdz)}
 .mtab.sp:not(.active):hover{color:#e9d5ff;border-color:var(--sp)}
-.mtab.stats.active{background:#0f766e;border-color:#0f766e;color:#fff}
+.mtab.stats{font-size:13px}
+.mtab.stats.active{background:linear-gradient(135deg,var(--gold-dim),var(--gold));border-color:var(--gold);color:#0a0a0f;font-weight:700}
 .mtab.feria.active{background:#b45309;border-color:#b45309;color:#fff}
-.mtab.stats:not(.active):hover{color:#99f6e4;border-color:#0f766e}
+.mtab.stats:not(.active):hover{color:var(--gold2);border-color:var(--gold-dim)}
 .mtab.feria:not(.active):hover{color:#fde68a;border-color:#b45309}
 
 /* SUB TABS */
@@ -514,6 +515,10 @@ const COVERS = {
 };
 
 const FRANCHISES = {
+  stats: {
+    label: "⬡ Resumen", fr: "stats",
+    subs: {}
+  },
   poke: {
     label: "Pokémon", fr: "poke",
     subs: {
@@ -561,7 +566,7 @@ const COLS = {
 
 // ===== STATE =====
 const API = "https://script.google.com/macros/s/AKfycbz4laUw4faQKEzRd5riXR9JfXk1-WvWZ06hj-KvIAC_5UpnI_lIm25kKcnd6CNIV88n/exec";
-let ST={},CUS={},curFr='poke',curSub='postales',curAlb=null,fil='all',q='',editId=null,viewMode='grid',readOnly=false;
+let ST={},CUS={},curFr='stats',curSub='postales',curAlb=null,fil='all',q='',editId=null,viewMode='grid',readOnly=false;
 let syncing=false,pendingSync=[];
 
 const POSTALES_PRESET = {"po_1": true, "po_3": true, "po_6": true, "po_7": true, "po_8": true, "po_9": true, "po_10": true, "po_11": true, "po_12": true, "po_13": true, "po_15": true, "po_17": true, "po_18": true, "po_19": true, "po_20": true, "po_21": true, "po_22": true, "po_23": true, "po_24": true, "po_25": true, "po_26": true, "po_29": true, "po_30": true, "po_31": true, "po_33": true, "po_34": true, "po_35": true, "po_36": true, "po_37": true, "po_38": true, "po_39": true, "po_40": true, "po_42": true, "po_43": true, "po_44": true, "po_45": true, "po_46": true, "po_47": true, "po_48": true, "po_49": true, "po_50": true, "po_51": true, "po_52": true, "po_54": true, "po_55": true, "po_56": true, "po_57": true, "po_58": true, "po_59": true, "po_60": true, "po_63": true, "po_64": true, "po_65": true, "po_66": true, "po_67": true, "po_68": true, "po_69": true, "po_70": true, "po_71": true, "po_72": true, "po_73": true, "po_74": true, "po_75": true, "po_76": true, "po_77": true, "po_78": true, "po_79": true, "po_82": true, "po_83": true, "po_85": true, "po_87": true, "po_88": true, "po_89": true, "po_90": true, "po_91": true, "po_92": true, "po_93": true, "po_94": true, "po_95": true, "po_96": true, "po_97": true, "po_98": true, "po_100": true, "po_101": true, "po_102": true, "po_103": true, "po_105": true, "po_106": true, "po_107": true, "po_108": true, "po_109": true, "po_110": true, "po_112": true, "po_113": true, "po_114": true, "po_116": true, "po_117": true, "po_118": true, "po_119": true, "po_120": true, "po_121": true, "po_122": true, "po_123": true, "po_124": true, "po_125": true, "po_126": true, "po_127": true, "po_128": true, "po_129": true, "po_130": true, "po_131": true, "po_132": true, "po_134": true, "po_135": true, "po_136": true, "po_137": true, "po_138": true};
@@ -1179,7 +1184,7 @@ function buildMainTabs(){
   ).join('');
 }
 
-load();buildMainTabs();setFr('poke');
+load();buildMainTabs();setFr('stats');
 if(window.location.search.includes('readonly=1')){toggleReadOnly();}
 </script>
 </body>
