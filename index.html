@@ -63,7 +63,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .srch::placeholder{color:var(--text3)}
 
 /* ALBUM BANNER */
-.alb-banner{margin-bottom:10px;padding:8px 12px;background:var(--bg2);border-radius:7px;border-left:3px solid var(--gold-dim)}
+.alb-banner{margin-bottom:10px;padding:8px 12px;background:var(--bg2);border-radius:7px;border-left:3px solid var(--gold-dim);position:sticky;top:120px;z-index:50;box-shadow:0 4px 12px rgba(0,0,0,.4)}
 .alb-label{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--gold);font-weight:600;letter-spacing:.5px}
 .alb-saga{font-size:10px;color:var(--text3);margin-top:2px}
 .alb-tabs-inner{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap}
@@ -73,7 +73,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .atab.cdz-a.active{border-color:#3b82f6;color:#60a5fa;background:rgba(59,130,246,.1)}
 
 /* SECTION TITLE */
-.sec-title{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:3px;margin:14px 0 8px;display:flex;align-items:center;gap:8px}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:3px;margin:14px 0 8px;display:flex;align-items:center;gap:8px;position:sticky;top:168px;z-index:40;background:var(--bg);padding:4px 0}
 .holo-t{color:transparent;background:var(--holo);-webkit-background-clip:text;background-clip:text;background-size:200%;animation:shimmer 4s linear infinite}
 .norm-t{color:#6a7890}
 @keyframes shimmer{0%{background-position:0%}100%{background-position:200%}}
@@ -626,6 +626,38 @@ function load(){
 }
 
 
+function goToSection(fr, sub, alb){
+  // Navigate to specific franchise + sub + album
+  curFr = fr;
+  curSub = sub;
+  curAlb = alb || null;
+  document.querySelectorAll('.mtab').forEach(t=>t.classList.toggle('active', t.dataset.fr===fr));
+  buildSubTabs();
+  // Set correct sub tab active
+  setTimeout(()=>{
+    document.querySelectorAll('.stab').forEach(t=>t.classList.toggle('active', t.dataset.sub===sub));
+    if(sub==='dbz_albums'||sub==='cdz_albums'){
+      const atEl=document.getElementById('albTabs');
+      const atIn=document.getElementById('albTabsInner');
+      if(sub==='dbz_albums'){
+        atIn.innerHTML=Object.entries(DDAT).map(([k,d])=>
+          `<button class="atab ${k===curAlb?'active':''}" data-a="${k}" onclick="setAlb('${k}')">${k}</button>`
+        ).join('');
+      } else {
+        atIn.innerHTML=Object.entries(CDAT).map(([k,d])=>
+          `<button class="atab cdz-a ${k===curAlb?'active':''}" data-a="${k}" onclick="setAlb('${k}')">${k}</button>`
+        ).join('');
+      }
+      atEl.style.display='block';
+    } else {
+      document.getElementById('albTabs').style.display='none';
+    }
+    render();
+    // Scroll to top
+    window.scrollTo({top:0, behavior:'smooth'});
+  }, 50);
+}
+
 function toggleReadOnly(){
   readOnly=!readOnly;
   const btn=document.getElementById('readOnlyBtn');
@@ -973,7 +1005,7 @@ function renderStats(){
     }
     const fpct=ft?Math.round(fh/ft*100):0;
     const col=frColor(frKey);
-    html+=`<div style="background:var(--bg2);border:1px solid ${col}44;border-radius:10px;padding:12px;text-align:center;cursor:pointer" onclick="setFr('${frKey}')">
+    html+=`<div style="background:var(--bg2);border:1px solid ${col}44;border-radius:10px;padding:12px;text-align:center;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='${col}'" onmouseout="this.style.borderColor='${col}44'" onclick="setFr('${frKey}')">
       <div style="font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:1px;color:${col}">${frVal.label.toUpperCase()}</div>
       <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--text);line-height:1.1">${fh}</div>
       <div style="font-size:10px;color:var(--text3)">de ${ft}</div>
@@ -993,7 +1025,7 @@ function renderStats(){
     const {h,t,pct}=countSection(sec.sub,sec.alb);
     const col=frColor(sec.fr);
     const missing=t-h;
-    html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--border);cursor:pointer" onclick="setFr('${sec.fr}')">
+    html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background=''" onclick="goToSection('${sec.fr}','${sec.sub}',${sec.alb?`'${sec.alb}'`:'null'})">
       <div style="width:3px;height:32px;background:${col};border-radius:2px;flex-shrink:0"></div>
       <div style="flex:1;min-width:0">
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${sec.label}</div>
