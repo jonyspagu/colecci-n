@@ -332,7 +332,27 @@ const TAZOS1 = [
 ].map(([n,i],idx)=>({id:`t1_${i}`,name:n,num:`Tazo #${String(idx+1).padStart(2,'0')}`,img:PA(i)})).concat([
   {id:'t1_51',name:'Ash Ketchum',num:'Tazo #51 · Exclusivo',img:HOLO_REAL['PK1_hA']||null}
 ]);
-const TAZOS2 = [];
+const TAZOS2 = [
+  ["Meowth",52],["Persian",53],["Psyduck",54],["Golduck",55],["Mankey",56],["Primeape",57],
+  ["Growlithe",58],["Arcanine",59],["Poliwag",60],["Poliwhirl",61],["Poliwrath",62],
+  ["Abra",63],["Kadabra",64],["Alakazam",65],["Machop",66],["Machoke",67],["Machamp",68],
+  ["Bellsprout",69],["Weepinbell",70],["Victreebel",71],["Tentacool",72],["Tentacruel",73],
+  ["Geodude",74],["Graveler",75],["Golem",76],["Ponyta",77],["Rapidash",78],
+  ["Slowpoke",79],["Slowbro",80],["Magnemite",81],["Magneton",82],["Farfetchd",83],
+  ["Doduo",84],["Dodrio",85],["Seel",86],["Dewgong",87],["Grimer",88],["Muk",89],
+  ["Shellder",90],["Cloyster",91],["Gastly",92],["Haunter",93],["Gengar",94],["Onix",95],
+  ["Drowzee",96],["Hypno",97],["Krabby",98],["Kingler",99],["Voltorb",100],["Electrode",101],
+  ["Exeggcute",102],["Exeggutor",103],["Cubone",104],["Marowak",105],
+  ["Hitmonlee",106],["Hitmonchan",107],["Lickitung",108],["Koffing",109],["Weezing",110],
+  ["Rhyhorn",111],["Rhydon",112],["Chansey",113],["Tangela",114],["Kangaskhan",115],
+  ["Horsea",116],["Seadra",117],["Goldeen",118],["Seaking",119],["Staryu",120],["Starmie",121],
+  ["Mr. Mime",122],["Scyther",123],["Jynx",124],["Electabuzz",125],["Magmar",126],["Pinsir",127],
+  ["Tauros",128],["Magikarp",129],["Gyarados",130],["Lapras",131],["Ditto",132],["Eevee",133],
+  ["Vaporeon",134],["Jolteon",135],["Flareon",136],["Porygon",137],["Omanyte",138],["Omastar",139],
+  ["Kabuto",140],["Kabutops",141],["Aerodactyl",142],["Snorlax",143],
+  ["Articuno",144],["Zapdos",145],["Moltres",146],["Dratini",147],["Dragonair",148],["Dragonite",149],
+  ["Mewtwo",150],["Mew",151]
+].map(([n,i])=>({id:`t2_${i}`,name:n,num:`Tazo #${i} · ${n}`,img:PA(i)}));
 const GIGA = [
   ["Meowth",52],["Persian",53],["Psyduck",54],["Golduck",55],["Mankey",56],["Primeape",57],
   ["Growlithe",58],["Arcanine",59],["Poliwag",60],["Poliwhirl",61],["Poliwrath",62],
@@ -550,6 +570,7 @@ const FRANCHISES = {
     subs: {
       postales:  {label:"Postales",     icon:"🃏"},
       tazos1:    {label:"Tazos 1",      icon:"⚡"},
+      tazos2:    {label:"Tazos 2",      icon:"⚡"},
       lenti:     {label:"Lenticulares", icon:"🌀"},
       giga:      {label:"Gigantazos",   icon:"🔴"},
       poke1:     {label:"Álbum 1",      icon:"📗"},
@@ -584,6 +605,7 @@ const FRANCHISES = {
 const COLS = {
   postales:{label:"Pokémon · Postales"},
   tazos1:{label:"Pokémon · Tazos Serie 1"},
+  tazos2:{label:"Pokémon · Tazos Serie 2 · Lenticulares"},
   lenti:{label:"Pokémon · Lenticulares 3D"},
   giga:{label:"Pokémon · Gigantazos"},
   poke1:{label:"Pokémon · Álbum 1"},
@@ -783,6 +805,7 @@ function clearImg(){delete CUS[editId];save();document.getElementById('imgModal'
 function getItems(sub, alb){
   if(sub==='postales') return [{l:null,items:POSTALES}];
   if(sub==='tazos1')   return [{l:null,items:TAZOS1}];
+  if(sub==='tazos2')   return [{l:'100 Tazos Lenticulares · #52 Meowth al #151 Mew',items:TAZOS2}];
   if(sub==='tazos2')   return [{l:null,items:TAZOS2}];
   if(sub==='lenti')    return [{l:'30 Lenticulares 3D · Cadenas Evolutivas',items:LENTI}];
   if(sub==='giga')     return [{l:null,items:GIGA}];
@@ -984,6 +1007,7 @@ function getAllSections(){
   const sections=[];
   sections.push({fr:'poke',label:'Pokémon · Postales · 138 cartas',                    sub:'postales', alb:null});
   sections.push({fr:'poke',label:'Pokémon · Tazos Serie 1 · 51 tazos (Frenchitas)',    sub:'tazos1',   alb:null});
+  sections.push({fr:'poke',label:'Pokémon · Tazos Serie 2 · 100 tazos lenticulares (#52-#151)', sub:'tazos2', alb:null});
   sections.push({fr:'poke',label:'Pokémon · Movi-Tazos 3D · 30 lenticulares',          sub:'lenti',    alb:null});
   sections.push({fr:'poke',label:'Pokémon · Gigantazos · 100 tazos (#52 al #151)',      sub:'giga',     alb:null});
   sections.push({fr:'poke',label:'Pokémon · Álbum 1 (1999 Navarrete) · ¡Atrápalo Ya!', sub:'poke1',    alb:null});
