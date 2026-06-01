@@ -685,22 +685,23 @@ function save(){
 }
 
 function tog(id){
-  ST[id]=!ST[id];
+  if(readOnly) return;
+  const val = !ST[id];
+  ST[id] = val;
   save();
   render();
-  // Sync to Google Sheets in background
-  const val=ST[id];
-  fetch(API,{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({action:'toggle',id:id,value:val})
-  })
-  .then(r=>r.json())
-  .then(d=>{
-    if(d.ok){showSyncStatus('✓ Guardado');setTimeout(()=>showSyncStatus(''),1500);}
-    else showSyncStatus('⚠ Error al guardar');
-  })
-  .catch(()=>showSyncStatus('⚠ Sin conexión'));
+  const url = API+'?action=toggle&id='+encodeURIComponent(id)+'&value='+val;
+  showSyncStatus('⟳ Guardando...');
+  fetch(url)
+    .then(r => r.json())
+    .then(d => {
+      showSyncStatus(d.ok ? '✓ Guardado' : '⚠ Error');
+      setTimeout(()=>showSyncStatus(''), 2000);
+    })
+    .catch(e => {
+      showSyncStatus('⚠ Sin conexión: '+e.message);
+      setTimeout(()=>showSyncStatus(''), 4000);
+    });
 }
 function openImgModal(e,id){e.stopPropagation();editId=id;document.getElementById('imgUrlInput').value=CUS[id]||'';document.getElementById('imgModal').style.display='flex'}
 function closeModal(e){if(!e||e.target===document.getElementById('imgModal'))document.getElementById('imgModal').style.display='none'}
