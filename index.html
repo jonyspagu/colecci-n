@@ -1606,103 +1606,14 @@ map((n,i)=>({id:`st_${i}`,name:n,num:`Tarjeta #${i+1}`}));
 
 
 
-function goToSection(fr, sub, alb){
-  // Navigate to specific franchise + sub + album
-  curFr = fr;
-  curSub = sub;
-  curAlb = alb || null;
-  document.querySelectorAll('.mtab').forEach(t=>t.classList.toggle('active', t.dataset.fr===fr));
-  buildSubTabs();
-  // Set correct sub tab active
-  setTimeout(()=>{
-    document.querySelectorAll('.stab').forEach(t=>t.classList.toggle('active', t.dataset.sub===sub));
-    if(sub==='dbz_albums'||sub==='cdz_albums'){
-      const atEl=document.getElementById('albTabs');
-      const atIn=document.getElementById('albTabsInner');
-      if(sub==='dbz_albums'){
-        atIn.innerHTML=Object.entries(DDAT).map(([k,d])=>
-          `<button class="atab ${k===curAlb?'active':''}" data-a="${k}" onclick="setAlb('${k}')">${k}</button>`
-        ).join('');
-      } else {
-        atIn.innerHTML=Object.entries(CDAT).map(([k,d])=>
-          `<button class="atab cdz-a ${k===curAlb?'active':''}" data-a="${k}" onclick="setAlb('${k}')">${k}</button>`
-        ).join('');
-      }
-      atEl.style.display='block';
-    } else {
-      document.getElementById('albTabs').style.display='none';
-    }
-    render();
-    // Scroll to top
-    window.scrollTo({top:0, behavior:'smooth'});
-  }, 50);
-}
-
-function toggleReadOnly(){
-  readOnly=!readOnly;
-  const btn=document.getElementById('readOnlyBtn');
-  const banner=document.getElementById('readonlyBanner');
-  if(readOnly){
-    btn.style.background='rgba(59,130,246,.2)';
-    btn.style.color='#93c5fd';
-    btn.style.borderColor='#3b82f6';
-    btn.textContent='✏️ Editar';
-    if(banner) banner.style.display='flex';
-  } else {
-    btn.style.background='var(--bg3)';
-    btn.style.color='var(--text3)';
-    btn.style.borderColor='var(--border)';
-    btn.textContent='👁 Solo ver';
-    if(banner) banner.style.display='none';
-  }
-}
 
 
-function setView(v){
-  viewMode=v;
-  document.getElementById('viewGrid').style.background=v==='grid'?'rgba(201,168,76,.15)':'var(--bg2)';
-  document.getElementById('viewGrid').style.borderColor=v==='grid'?'var(--gold)':'var(--border)';
-  document.getElementById('viewGrid').style.color=v==='grid'?'var(--gold)':'var(--text3)';
-  document.getElementById('viewAlbum').style.background=v==='album'?'rgba(201,168,76,.15)':'var(--bg2)';
-  document.getElementById('viewAlbum').style.borderColor=v==='album'?'var(--gold)':'var(--border)';
-  document.getElementById('viewAlbum').style.color=v==='album'?'var(--gold)':'var(--text3)';
-  renderCurrent();
-}
-
-function renderAlbumSlot(it){
-  const hv=!!ST[it.id],ho=!!it.holo;
-  const f=fil,sq=q.toLowerCase();
-  if(f==='have'&&!hv)return'';
-  if(f==='miss'&&hv)return'';
-  if(sq&&!it.name.toLowerCase().includes(sq))return'';
-  const imgSrc=it.img||HOLO_REAL[it.id]||'';
-  const missing=!hv?'missing':'';
-  return`<div class="alb-slot ${hv?'have':''} ${ho?'holo-s':''} ${missing}" onclick="tog('${it.id}')">
-    <div class="alb-img">
-      ${imgSrc?`<img src="${imgSrc}" alt="${it.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`:''}<div class="ph2" ${imgSrc?'style="display:none"':''}>◈</div>
-      <div class="alb-holo-ov"></div>
-      <div class="alb-check">${hv?'✓':''}</div>
-    </div>
-    <div class="alb-num">${it.num||it.name}</div>
-  </div>`;
-}
-
-function renderCurrent(){
-  if(curFr==='stats') renderStats();
-  else if(curFr==='feria') renderFeria();
-  else render();
-}
-
-function showSyncStatus(msg){
-  let el=document.getElementById('syncStatus');
-  if(el) el.textContent=msg;
-}
 
 
-function openImgModal(e,id){e.stopPropagation();editId=id;document.getElementById('imgUrlInput').value=CUS[id]||'';document.getElementById('imgModal').style.display='flex'}
-function closeModal(e){if(!e||e.target===document.getElementById('imgModal'))document.getElementById('imgModal').style.display='none'}
-function saveImg(){const u=document.getElementById('imgUrlInput').value.trim();if(u)CUS[editId]=u;else delete CUS[editId];save();document.getElementById('imgModal').style.display='none';render()}
-function clearImg(){delete CUS[editId];save();document.getElementById('imgModal').style.display='none';render()}
+
+
+
+
 
 // ===== ITEMS GETTER =====
 function getItems(sub, alb){
@@ -1744,16 +1655,6 @@ if(sub==='tazos2')   return [{l:'100 Tazos Lenticulares · #52 Meowth al #151 Me
 }
 
 // count entire franchise
-function countFr(fr){
-  let h=0,t=0;
-  const subs=Object.keys(FRANCHISES[fr].subs);
-  for(const sub of subs){
-    const albs=sub==='dbz_albums'?Object.keys(DDAT):sub==='cdz_albums'?Object.keys(CDAT):[null];
-    for(const a of albs)for(const s of getItems(sub,a))for(const it of s.items){t++;if(ST[it.id])h++;}
-  }
-  return{h,t};
-}
-function countAll(){let h=0,t=0;for(const fr of Object.keys(FRANCHISES)){const c=countFr(fr);h+=c.h;t+=c.t;}return{h,t};}
 function countCur(){
   const sq=q.toLowerCase();
   let h=0,t=0;
@@ -1766,105 +1667,19 @@ function countCur(){
 }
 
 // ===== UI =====
-function setF(f){fil=f;document.querySelectorAll('.fbtn').forEach(b=>b.classList.toggle('active',b.dataset.f===f));document.getElementById('feriaBar').style.display=f==='miss'?'flex':'none';render()}
 
 
 
-function setAlb(a){
-  curAlb=a;
-  document.querySelectorAll('.atab').forEach(t=>t.classList.toggle('active',t.dataset.a===a));
-  render();
-}
 
 
-function buildAlbTabs(){
-  const atEl=document.getElementById('albTabs');
-  const atIn=document.getElementById('albTabsInner');
-  if(curSub==='dbz_albums'){
-    curAlb=curAlb||'DB1';
-    atIn.innerHTML=Object.entries(DDAT).map(([k,d])=>
-      `<button class="atab ${k===curAlb?'active':''}" data-a="${k}" onclick="setAlb('${k}')">${k}</button>`
-    ).join('');
-    atEl.style.display='block';
-  } else if(curSub==='cdz_albums'){
-    curAlb=curAlb||'CDZ1';
-    atIn.innerHTML=Object.entries(CDAT).map(([k,d])=>
-      `<button class="atab cdz-a ${k===curAlb?'active':''}" data-a="${k}" onclick="setAlb('${k}')">${k}</button>`
-    ).join('');
-    atEl.style.display='block';
-  } else {
-    curAlb=null;
-    atEl.style.display='none';
-  }
-}
 
 // ===== RENDER =====
-function renderHoloCard(it){
-  const hv=!!ST[it.id];
-  if(fil==='have'&&!hv)return'';
-  if(fil==='miss'&&hv)return'';
-  if(q&&!it.name.toLowerCase().includes(q))return'';
-  const imgSrc=it.img||'';
-  const needBtn=!imgSrc&&(curSub==='dbz_albums'||curSub==='cdz_albums'||curSub==='poke2');
-  return`<div class="card ${hv?'have':''} holo-c" onclick="tog('${it.id}')">
-    <div class="img-wrap">
-      ${imgSrc?`<img src="${imgSrc}" alt="${it.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`:''}<div class="ph" ${imgSrc?'style="display:none"':''}>✦</div>
-      <div class="holo-ov"></div><div class="chk">${hv?'✓':''}</div>
-      ${needBtn?`<button class="edit-img-btn" onclick="openImgModal(event,'${it.id}')">📷</button>`:''}
-    </div>
-    <div class="card-info"><div class="card-name">${it.name}</div><div class="card-num">${it.num}</div></div>
-  </div>`;
-}
 
-function renderGridCard(it){
-  const hv=!!ST[it.id];
-  if(fil==='have'&&!hv)return'';
-  if(fil==='miss'&&hv)return'';
-  if(q&&!it.name.toLowerCase().includes(q))return'';
-  const imgSrc=it.img||'';
-  return`<div class="card ${hv?'have':''}" onclick="tog('${it.id}')">
-    <div class="img-wrap">
-      ${imgSrc?`<img src="${imgSrc}" alt="${it.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`:''}<div class="ph" ${imgSrc?'style="display:none"':''}>◈</div>
-      <div class="chk">${hv?'✓':''}</div>
-    </div>
-    <div class="card-info"><div class="card-name">${it.name}</div><div class="card-num">${it.num}</div></div>
-  </div>`;
-}
 
-function renderTableRow(it){
-  const hv=!!ST[it.id];
-  if(fil==='have'&&!hv)return'';
-  if(fil==='miss'&&hv)return'';
-  if(q&&!it.name.toLowerCase().includes(q))return'';
-  return`<tr class="${hv?'have':''}" onclick="tog('${it.id}')">
-    <td><div class="row-chk">${hv?'✓':''}</div></td>
-    <td><span class="row-num">${it.num}</span></td>
-    <td><span class="row-name">${it.name}</span></td>
-  </tr>`;
-}
 
 
 // ===== STATS =====
-function getAllSections(){
-  const sections=[];
-  sections.push({fr:'poke',label:'Pokémon · Postales · 138 cartas',                    sub:'postales', alb:null});
-  sections.push({fr:'poke',label:'Pokémon · Tazos Serie 1 · 51 tazos (Frenchitas)',    sub:'tazos1',   alb:null});
-  sections.push({fr:'poke',label:'Pokémon · Tazos Serie 2 · 100 tazos lenticulares (#52-#151)', sub:'tazos2', alb:null});
-  sections.push({fr:'poke',label:'Pokémon · Movi-Tazos 3D · 30 lenticulares',          sub:'lenti',    alb:null});
-  sections.push({fr:'poke',label:'Pokémon · Gigantazos · 100 tazos (#52 al #151)',      sub:'giga',     alb:null});
-  sections.push({fr:'poke',label:'Pokémon · Álbum 1 (1999 Navarrete) · ¡Atrápalo Ya!', sub:'poke1',    alb:null});
-  sections.push({fr:'poke',label:'Pokémon · Álbum 2 (2000 Navarrete) · Medallas Liga',  sub:'poke2',    alb:null});
-  Object.keys(DDAT).forEach(a=>sections.push({fr:'dbz',label:DDAT[a].label+' — '+DDAT[a].saga, sub:'dbz_albums', alb:a}));
-  sections.push({fr:'dbz',label:'Dragon Ball · Sobre Plateado (1999) · Muñecos y Tarjetas', sub:'sp', alb:null});
-  Object.keys(CDAT).forEach(a=>sections.push({fr:'cdz',label:CDAT[a].label+' — '+CDAT[a].saga, sub:'cdz_albums', alb:a}));
-  return sections;
-}
 
-function countSection(sub,alb){
-  let h=0,t=0;
-  for(const s of getItems(sub,alb))for(const it of s.items){t++;if(ST[it.id])h++;}
-  return{h,t,pct:t?Math.round(h/t*100):0};
-}
 
 function frColor(fr){
   return fr==='poke'?'#f5c518':fr==='dbz'?'#ea580c':fr==='cdz'?'#2563eb':'#9333ea';
@@ -1875,72 +1690,8 @@ function frColor(fr){
 let feriaFilter = 'all'; // 'all' | franchise key | sub key
 
 
-function exportFeria(){
-  const sections = getAllSections();
-  const filteredSections = sections.filter(sec => {
-    if(feriaFilter === 'all') return true;
-    if(feriaFilter === 'sp') return sec.sub === 'sp';
-    return sec.fr === feriaFilter;
-  });
 
-  let lines = ['🎴 MI LISTA DE FALTANTES', ''];
-  let totalMissing = 0;
 
-  for(const sec of filteredSections){
-    const items = getItems(sec.sub, sec.alb).flatMap(s => s.items).filter(it => !ST[it.id]);
-    if(items.length === 0) continue;
-    totalMissing += items.length;
-    
-    lines.push(`📌 ${sec.label} (faltan ${items.length})`);
-    
-    const holos = items.filter(it => it.holo);
-    const normals = items.filter(it => !it.holo);
-    
-    if(holos.length){
-      lines.push('  ✦ HOLOS: ' + holos.map(it => it.name).join(', '));
-    }
-    if(normals.length){
-      // Group in chunks of 10 for readability
-      const chunks = [];
-      for(let i=0; i<normals.length; i+=10){
-        chunks.push(normals.slice(i,i+10).map(it => it.num).join(' · '));
-      }
-      chunks.forEach(c => lines.push('  ' + c));
-    }
-    lines.push('');
-  }
-
-  lines.push(`Total: ${totalMissing} figuritas faltantes`);
-  const text = lines.join('\n');
-
-  // Copy to clipboard
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(text).then(()=>{
-      showExportToast('✓ Copiado al portapapeles — pegalo en WhatsApp');
-    }).catch(()=> showExportFallback(text));
-  } else {
-    showExportFallback(text);
-  }
-}
-
-function showExportToast(msg){
-  let toast = document.getElementById('exportToast');
-  if(!toast){
-    toast = document.createElement('div');
-    toast.id = 'exportToast';
-    toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#22c55e;color:#fff;padding:10px 20px;border-radius:20px;font-family:"Barlow Condensed",sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;z-index:999;transition:opacity .3s';
-    document.body.appendChild(toast);
-  }
-  toast.textContent = msg;
-  toast.style.opacity = '1';
-  setTimeout(()=>{ toast.style.opacity='0'; }, 3000);
-}
-
-function showExportFallback(text){
-  const modal = document.getElementById('imgModal');
-  document.getElementById('imgUrlInput').value = text;
-  document.getElementById('imgModal').style.display = 'flex';
-}
 
 
 
