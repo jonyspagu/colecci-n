@@ -1191,7 +1191,7 @@ function render(){
   if(curSub==='dbz_albums'&&curAlb){const d=DDAT[curAlb];html+=`<div class="alb-banner"><div class="alb-label">${d.label}</div><div class="alb-saga">${d.saga}</div></div>`;}
   if(curSub==='cdz_albums'&&curAlb){const d=CDAT[curAlb];html+=`<div class="alb-banner" style="border-left-color:#2563eb"><div class="alb-label" style="color:#60a5fa">${d.label}</div><div class="alb-saga">${d.saga}</div></div>`;}
 
-  const useTable = curSub==='dbz_albums'||curSub==='cdz_albums'||curSub==='sp'||curSub==='poke1'||curSub==='poke2';
+  const useTable = curSub==='dbz_albums'||curSub==='cdz_albums'||curSub==='sp'||curSub==='poke1'||curSub==='poke2'||curSub==='postales'||curSub==='tazos1'||curSub==='tazos2'||curSub==='giga'||curSub==='lenti';
 
   const forceTable = curSub==='cdz_albums';
   for(const sec of secs){
