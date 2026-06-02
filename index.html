@@ -1604,59 +1604,6 @@ map((n,i)=>({id:`st_${i}`,name:n,num:`Tarjeta #${i+1}`}));
 // ===== STATE =====
 
 
-function load(){
-  try{CUS=JSON.parse(localStorage.getItem('mc4_imgs')||'{}')}catch(e){CUS={}}
-  // Load local state for instant render
-  try{ST=JSON.parse(localStorage.getItem('mc4_local')||'{}')}catch(e){ST={}}
-  renderCurrent();
-  // Always sync from Google Sheets — Sheets is the source of truth
-  showSyncStatus('⟳ Sincronizando...');
-  fetch(API+'?action=getAll', {redirect:'follow'})
-    .then(r=>r.json())
-    .then(d=>{
-      if(d.ok){
-        const sheetsData = d.data||{};
-        const sheetsCount = Object.keys(sheetsData).filter(k=>sheetsData[k]).length;
-        if(sheetsCount > 0){
-          // Merge: Sheets wins over local (Sheets is source of truth)
-          // But also push any local items not in Sheets back up
-          const localData = JSON.parse(localStorage.getItem('mc4_local')||'{}');
-          const merged = Object.assign({}, localData, sheetsData);
-          ST = merged;
-          localStorage.setItem('mc4_local', JSON.stringify(ST));
-          // Push merged state back to Sheets if local had extra items
-          const localKeys = Object.keys(localData).filter(k=>localData[k]);
-          const sheetsKeys = Object.keys(sheetsData).filter(k=>sheetsData[k]);
-          const hasExtra = localKeys.some(k=>!sheetsData.hasOwnProperty(k));
-          if(hasExtra){
-            fetch(API+'?action=setAll&state='+encodeURIComponent(JSON.stringify(ST)))
-              .catch(()=>{});
-          }
-          renderCurrent();
-          showSyncStatus('✓ Sincronizado ('+Object.keys(ST).filter(k=>ST[k]).length+' marcadas)');
-          setTimeout(()=>showSyncStatus(''),2500);
-        } else {
-          // Sheets empty — push local preset (postales) up
-          if(!localStorage.getItem('mc4_preloaded')){
-            const preset=POSTALES_PRESET;
-            Object.assign(ST, preset);
-            localStorage.setItem('mc4_local', JSON.stringify(ST));
-            localStorage.setItem('mc4_preloaded','1');
-            renderCurrent();
-            fetch(API+'?action=setAll&state='+encodeURIComponent(JSON.stringify(ST)))
-              .then(r=>r.json()).then(d=>{
-                if(d.ok) showSyncStatus('✓ '+Object.keys(preset).length+' postales cargadas');
-                setTimeout(()=>showSyncStatus(''),2500);
-              });
-          } else {
-            showSyncStatus('✓ Local');
-            setTimeout(()=>showSyncStatus(''),1500);
-          }
-        }
-      }
-    })
-    .catch(()=>showSyncStatus('⚠ Sin conexión — cambios guardados local'));
-}
 
 
 function goToSection(fr, sub, alb){
@@ -1751,30 +1698,7 @@ function showSyncStatus(msg){
   if(el) el.textContent=msg;
 }
 
-function save(){
-  localStorage.setItem('mc4_local',JSON.stringify(ST));
-  localStorage.setItem('mc4_imgs',JSON.stringify(CUS));
-}
 
-function tog(id){
-  if(readOnly || window.location.search.includes('readonly=1')) return;
-  const val = !ST[id];
-  ST[id] = val;
-  save();
-  render();
-  const url = API+'?action=toggle&id='+encodeURIComponent(id)+'&value='+val;
-  showSyncStatus('⟳ Guardando...');
-  fetch(url)
-    .then(r => r.json())
-    .then(d => {
-      showSyncStatus(d.ok ? '✓ Guardado' : '⚠ Error');
-      setTimeout(()=>showSyncStatus(''), 2000);
-    })
-    .catch(e => {
-      showSyncStatus('⚠ Sin conexión: '+e.message);
-      setTimeout(()=>showSyncStatus(''), 4000);
-    });
-}
 function openImgModal(e,id){e.stopPropagation();editId=id;document.getElementById('imgUrlInput').value=CUS[id]||'';document.getElementById('imgModal').style.display='flex'}
 function closeModal(e){if(!e||e.target===document.getElementById('imgModal'))document.getElementById('imgModal').style.display='none'}
 function saveImg(){const u=document.getElementById('imgUrlInput').value.trim();if(u)CUS[editId]=u;else delete CUS[editId];save();document.getElementById('imgModal').style.display='none';render()}
@@ -1844,26 +1768,7 @@ function countCur(){
 // ===== UI =====
 function setF(f){fil=f;document.querySelectorAll('.fbtn').forEach(b=>b.classList.toggle('active',b.dataset.f===f));document.getElementById('feriaBar').style.display=f==='miss'?'flex':'none';render()}
 
-function setFr(fr){
-  curFr=fr;curAlb=null;
-  document.querySelectorAll('.mtab').forEach(t=>t.classList.toggle('active',t.dataset.fr===fr));
-  document.getElementById('subTabs').innerHTML='';
-  document.getElementById('albTabs').style.display='none';
-  if(fr==='stats'){renderStats();return;}
-  if(fr==='feria'){renderFeria();return;}
-  const subs=Object.keys(FRANCHISES[fr].subs);
-  curSub=subs[0];
-  buildSubTabs();
-  buildAlbTabs();
-  render();
-}
 
-function setSub(sub){
-  curSub=sub;curAlb=null;
-  document.querySelectorAll('.stab').forEach(t=>t.classList.toggle('active',t.dataset.sub===sub));
-  buildAlbTabs();
-  render();
-}
 
 function setAlb(a){
   curAlb=a;
@@ -1871,12 +1776,6 @@ function setAlb(a){
   render();
 }
 
-function buildSubTabs(){
-  const subs=FRANCHISES[curFr].subs;
-  document.getElementById('subTabs').innerHTML=Object.entries(subs).map(([k,v])=>
-    `<button class="stab ${k===curSub?'active':''}" data-sub="${k}" onclick="setSub('${k}')">${v.icon} ${v.label}</button>`
-  ).join('');
-}
 
 function buildAlbTabs(){
   const atEl=document.getElementById('albTabs');
@@ -1944,42 +1843,6 @@ function renderTableRow(it){
   </tr>`;
 }
 
-function render(){
-  q=document.getElementById('srch').value.toLowerCase();
-  const{h,t}=countCur();
-  document.getElementById('statNums').innerHTML=`${h} <span>/ ${t}</span>`;
-  const pct=t?Math.round(h/t*100):0;
-  document.getElementById('progFill').style.width=pct+'%';
-  document.getElementById('pctLbl').textContent=pct+'%';
-  const ga=countAll();
-  document.getElementById('totalBadge').textContent=`${ga.h} / ${ga.t}`;
-
-  let html='';
-  const secs=getItems(curSub,curAlb);
-
-  // album banner
-  if(curSub==='dbz_albums'&&curAlb){const d=DDAT[curAlb];html+=`<div class="alb-banner"><div class="alb-label">${d.label}</div><div class="alb-saga">${d.saga}</div></div>`;}
-  if(curSub==='cdz_albums'&&curAlb){const d=CDAT[curAlb];html+=`<div class="alb-banner" style="border-left-color:#2563eb"><div class="alb-label" style="color:#60a5fa">${d.label}</div><div class="alb-saga">${d.saga}</div></div>`;}
-
-  const useTable = curSub==='dbz_albums'||curSub==='cdz_albums'||curSub==='sp'||curSub==='poke1'||curSub==='poke2';
-
-  const forceTable = curSub==='cdz_albums';
-  for(const sec of secs){
-    const isHolo=sec.l&&(sec.l.includes('Holo')||sec.l.includes('Lenticular')||sec.l.includes('Brillante'));
-    if(sec.l) html+=`<div class="sec-title ${isHolo&&!forceTable?'holo-t':'norm-t'}">${isHolo&&!forceTable?'✦ ':''}${sec.l.toUpperCase()}<div class="sec-line"></div></div>`;
-    if(isHolo && !forceTable){
-      const cards=sec.items.map(renderHoloCard).filter(Boolean).join('');
-      html+=cards?`<div class="grid">${cards}</div>`:`<div class="empty">Nada que mostrar</div>`;
-    } else if(useTable || forceTable){
-      const rows=sec.items.map(renderTableRow).filter(Boolean).join('');
-      html+=rows?`<div class="tbl-wrap"><table class="figs"><thead><tr><th>✓</th><th>#</th><th>Nombre</th></tr></thead><tbody>${rows}</tbody></table></div>`:`<div class="empty">Nada que mostrar</div>`;
-    } else {
-      const cards=sec.items.map(renderGridCard).filter(Boolean).join('');
-      html+=cards?`<div class="grid">${cards}</div>`:`<div class="empty">Nada que mostrar</div>`;
-    }
-  }
-  document.getElementById('content').innerHTML=html;
-}
 
 // ===== STATS =====
 function getAllSections(){
@@ -2007,178 +1870,10 @@ function frColor(fr){
   return fr==='poke'?'#f5c518':fr==='dbz'?'#ea580c':fr==='cdz'?'#2563eb':'#9333ea';
 }
 
-function renderStats(){
-  document.getElementById('feriaBar').style.display='none';
-  document.getElementById('albTabs').style.display='none';
-  document.getElementById('statNums').innerHTML='';
-  document.getElementById('progFill').style.width='0%';
-  document.getElementById('pctLbl').textContent='';
-
-  const sections=getAllSections();
-  const ga=countAll();
-  const gPct=ga.t?Math.round(ga.h/ga.t*100):0;
-
-  let html=`
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:20px">
-    <div style="background:var(--bg2);border:1px solid var(--gold-dim);border-radius:10px;padding:14px;text-align:center;grid-column:1/-1">
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:var(--text3)">TOTAL GENERAL</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:42px;color:var(--gold2);line-height:1">${ga.h}</div>
-      <div style="font-size:12px;color:var(--text3);margin-bottom:8px">de ${ga.t} items</div>
-      <div style="height:6px;background:var(--bg3);border-radius:3px;overflow:hidden">
-        <div style="height:100%;width:${gPct}%;background:linear-gradient(90deg,var(--gold-dim),var(--gold2));border-radius:3px"></div>
-      </div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold);margin-top:6px">${gPct}%</div>
-    </div>`;
-
-  // Per franchise summary cards
-  for(const [frKey,frVal] of Object.entries(FRANCHISES)){
-    if(frKey==='stats'||frKey==='feria') continue;
-    let fh=0,ft=0;
-    const frSubs=Object.keys(frVal.subs);
-    for(const sub of frSubs){
-      const albs=sub==='dbz_albums'?Object.keys(DDAT):sub==='cdz_albums'?Object.keys(CDAT):[null];
-      for(const a of albs){for(const s of getItems(sub,a))for(const it of s.items){ft++;if(ST[it.id])fh++;}}
-    }
-    const fpct=ft?Math.round(fh/ft*100):0;
-    const col=frColor(frKey);
-    html+=`<div style="background:var(--bg2);border:1px solid ${col}44;border-radius:10px;padding:12px;text-align:center;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='${col}'" onmouseout="this.style.borderColor='${col}44'" onclick="setFr('${frKey}')">
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:1px;color:${col}">${frVal.label.toUpperCase()}</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--text);line-height:1.1">${fh}</div>
-      <div style="font-size:10px;color:var(--text3)">de ${ft}</div>
-      <div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-top:8px">
-        <div style="height:100%;width:${fpct}%;background:${col};border-radius:2px"></div>
-      </div>
-      <div style="font-size:11px;color:${col};margin-top:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700">${fpct}%</div>
-    </div>`;
-  }
-  html+='</div>';
-
-  // Detail rows per collection
-  html+=`<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:10px;overflow:hidden">
-    <div style="padding:10px 14px;border-bottom:1px solid var(--border);font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:var(--text3)">DETALLE POR COLECCIÓN</div>`;
-
-  for(const sec of sections){
-    const {h,t,pct}=countSection(sec.sub,sec.alb);
-    const col=frColor(sec.fr);
-    const missing=t-h;
-    html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background=''" onclick="goToSection('${sec.fr}','${sec.sub}',${sec.alb?`'${sec.alb}'`:'null'})">
-      <div style="width:3px;height:32px;background:${col};border-radius:2px;flex-shrink:0"></div>
-      <div style="flex:1;min-width:0">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${sec.label}</div>
-        <div style="height:3px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-top:4px">
-          <div style="height:100%;width:${pct}%;background:${col};border-radius:2px;transition:width .4s"></div>
-        </div>
-      </div>
-      <div style="text-align:right;flex-shrink:0">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--text)">${h}<span style="font-size:11px;color:var(--text3)">/${t}</span></div>
-        <div style="font-size:10px;color:${missing>0?'#f97316':'#22c55e'}">${missing>0?`faltan ${missing}`:'✓ completa'}</div>
-      </div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:14px;color:${col};min-width:36px;text-align:right">${pct}%</div>
-    </div>`;
-  }
-  html+='</div>';
-
-  document.getElementById('content').innerHTML=html;
-  document.getElementById('statNums').innerHTML='';
-}
 
 // ===== FERIA MODE =====
 let feriaFilter = 'all'; // 'all' | franchise key | sub key
 
-function renderFeria(){
-  document.getElementById('feriaBar').style.display='none';
-  document.getElementById('albTabs').style.display='none';
-
-  const sections = getAllSections();
-  const {h,t} = countAll();
-  document.getElementById('statNums').innerHTML=`<span style="color:#f97316">${t-h}</span> <span style="font-size:13px;color:var(--text3)">faltan</span>`;
-  document.getElementById('progFill').style.width='0%';
-  document.getElementById('pctLbl').textContent='';
-
-  // Build filter bar
-  const frOptions = [
-    {key:'all', label:'Todo'},
-    {key:'poke', label:'Pokémon'},
-    {key:'dbz',  label:'Dragon Ball'},
-    {key:'cdz',  label:'CDZ'},
-    {key:'sp',   label:'Sobre Plateado'},
-  ];
-  
-  let filterHtml = `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;align-items:center">
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-right:4px">Filtrar:</div>`;
-  
-  for(const opt of frOptions){
-    const isActive = feriaFilter === opt.key;
-    const col = opt.key==='poke'?'#f5c518':opt.key==='dbz'?'#ea580c':opt.key==='cdz'?'#2563eb':opt.key==='sp'?'#9333ea':'var(--gold)';
-    filterHtml += `<button onclick="feriaFilter='${opt.key}';renderFeria()" style="background:${isActive?col+'22':'var(--bg2)'};border:1px solid ${isActive?col:'var(--border)'};color:${isActive?col:'var(--text3)'};border-radius:20px;padding:4px 12px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.5px;cursor:pointer">${opt.label}</button>`;
-  }
-  
-  // Export button
-  filterHtml += `<button onclick="exportFeria()" style="margin-left:auto;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#22c55e;border-radius:20px;padding:4px 14px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.5px;cursor:pointer">📋 Exportar para WhatsApp</button>`;
-  filterHtml += '</div>';
-
-  // Filter sections
-  const filteredSections = sections.filter(sec => {
-    if(feriaFilter === 'all') return true;
-    if(feriaFilter === 'sp') return sec.sub === 'sp';
-    return sec.fr === feriaFilter;
-  });
-
-  let html2 = filterHtml;
-  let totalMissing = 0;
-
-  for(const sec of filteredSections){
-    const items = getItems(sec.sub, sec.alb).flatMap(s => s.items).filter(it => !ST[it.id]);
-    if(items.length === 0) continue;
-    totalMissing += items.length;
-    const col = frColor(sec.fr);
-
-    html2 += `<div style="margin-bottom:16px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:${col}">${sec.label.toUpperCase()}</div>
-        <div style="background:${col}33;color:${col};font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px">Faltan ${items.length}</div>
-      </div>`;
-
-    const holos = items.filter(it => it.holo);
-    const normals = items.filter(it => !it.holo);
-
-    if(holos.length){
-      html2 += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:6px;margin-bottom:8px">`;
-      for(const it of holos){
-        const imgSrc = it.img || HOLO_REAL[it.id] || '';
-        html2 += `<div style="background:var(--bg2);border:1px solid #4f3d8a;border-radius:8px;overflow:hidden;cursor:pointer;position:relative" onclick="tog('${it.id}');renderFeria()">
-          <div style="width:100%;aspect-ratio:1;background:var(--bg3);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
-            ${imgSrc?`<img src="${imgSrc}" style="width:100%;height:100%;object-fit:cover" loading="lazy">`:'<span style="color:var(--text3);font-size:18px">✦</span>'}
-            <div style="position:absolute;inset:0;background:var(--holo);opacity:.2;background-size:300%;animation:shimmer 3s linear infinite;mix-blend-mode:overlay;pointer-events:none"></div>
-          </div>
-          <div style="padding:4px 5px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;color:var(--text2)">${it.name}</div>
-          <div style="font-size:9px;color:var(--text3)">${it.num}</div></div>
-        </div>`;
-      }
-      html2 += '</div>';
-    }
-
-    if(normals.length){
-      html2 += `<div style="display:flex;flex-wrap:wrap;gap:5px">`;
-      for(const it of normals){
-        html2 += `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:3px 8px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--text2);display:flex;gap:5px;align-items:center" onclick="tog('${it.id}');renderFeria()">
-          <span style="color:var(--text3);font-size:10px">${it.num}</span> ${it.name}
-        </div>`;
-      }
-      html2 += '</div>';
-    }
-    html2 += '</div>';
-  }
-
-  if(totalMissing === 0){
-    html2 += `<div style="text-align:center;padding:60px 20px">
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--gold);letter-spacing:3px">¡COLECCIÓN COMPLETA!</div>
-      <div style="color:var(--text3);font-size:14px;margin-top:8px">No te falta ninguna figurita</div>
-    </div>`;
-  }
-
-  document.getElementById('content').innerHTML = html2;
-}
 
 function exportFeria(){
   const sections = getAllSections();
@@ -2248,11 +1943,6 @@ function showExportFallback(text){
 }
 
 
-function buildMainTabs(){
-  document.getElementById('mainTabs').innerHTML=Object.entries(FRANCHISES).map(([k,v])=>
-    `<button class="mtab ${v.fr} ${k===curFr?'active':''}" data-fr="${k}" onclick="setFr('${k}')">${v.label}</button>`
-  ).join('');
-}
 
 // READONLY MODE — must check before anything
 if(window.location.search.includes('readonly=1')){
