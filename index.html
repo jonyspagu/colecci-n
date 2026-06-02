@@ -1578,12 +1578,12 @@ if(window.location.search.includes('readonly=1')){
 buildMainTabs();setFr('stats');load();
 
 // ===== POKEMON DATA =====
-png`;
+const PA = n => `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${n}.png`;
 
 
 
 // ===== ITEMS =====
-=>({id:`po_${i}`,name:n,num:`Postal #${String(i).padStart(3,'0')}`,img:PA(i)}));
+const POSTALES = PKM151.slice(0,138).map(([n,i])=>({id:`po_${i}`,name:n,num:`Postal #${String(i).padStart(3,'0')}`,img:PA(i)}));
 
 
 
