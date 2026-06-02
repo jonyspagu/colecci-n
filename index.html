@@ -105,7 +105,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .edit-img-btn:hover{color:var(--gold)}
 
 /* TABLE */
-.tbl-wrap{overflow-x:auto}
+.tbl-wrap{overflow-x:auto}.tbl-multi{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start}.tbl-multi .tbl-wrap{flex:1;min-width:280px}
 table.figs{width:100%;border-collapse:collapse;font-size:12px}
 table.figs th{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1px;color:#8a9bb5;text-transform:uppercase;padding:8px 10px;border-bottom:1px solid #2a2840;text-align:left;background:#13131c}
 table.figs td{padding:7px 10px;border-bottom:1px solid #1e1e2e;vertical-align:middle;cursor:pointer;transition:background .1s}
@@ -870,9 +870,10 @@ function load(){
           // Push merged state back to Sheets if local had extra items
           const localKeys = Object.keys(localData).filter(k=>localData[k]);
           const sheetsKeys = Object.keys(sheetsData).filter(k=>sheetsData[k]);
-          const hasExtra = localKeys.some(k=>!sheetsData.hasOwnProperty(k));
-          if(hasExtra){
-            fetch(API+'?action=setAll&state='+encodeURIComponent(JSON.stringify(ST)))
+          const sheetsStr = JSON.stringify(sheetsData);
+          const localStr = JSON.stringify(ST);
+          if(sheetsStr !== localStr){
+            fetch(API+'?action=setAll&state='+encodeURIComponent(localStr))
               .catch(()=>{});
           }
           renderCurrent();
@@ -1046,16 +1047,13 @@ function getItems(sub, alb){
   if(sub==='dbz_albums'){
     const a=alb||'DB1',d=DDAT[a];
     const hI=d.holos.map((n,i)=>{const id=`${a}_h${i}`;return{id,name:n,num:`Holo #${i+1}`,holo:true,img:CUS[id]||HOLO_REAL[id]||null};});
-    const nI=Array.from({length:d.total-12},(_,i)=>({id:`${a}_n${i+1}`,name:`Figurita #${i+1}`,num:`#${i+1}`}));
-    return [{l:`12 Holos Holográficas`,items:hI},{l:`${d.total-12} Figuritas Normales`,items:nI}];
+    return [{l:`Holos · ${d.label}`,items:hI}];
   }
   if(sub==='cdz_albums'){
     const a=alb||'CDZ1',d=CDAT[a];
     const hLabel=d.holoLabel||'Especiales';
     const hI=d.holos.map((n,i)=>({id:`${a}_h${i}`,name:n,num:`#${i+1}`,holo:true,img:null}));
-    const normCount=d.total-d.holos.length;
-    const nI=Array.from({length:normCount},(_,i)=>({id:`${a}_n${i+1}`,name:`Figurita #${i+1}`,num:`#${i+1}`}));
-    return [{l:hLabel,items:hI},{l:`${normCount} Figuritas Normales`,items:nI}];
+    return [{l:hLabel,items:hI}];
   }
   return [];
 }
@@ -1198,26 +1196,37 @@ function render(){
   let html='';
   const secs=getItems(curSub,curAlb);
 
-  // album banner
-  if(curSub==='dbz_albums'&&curAlb){const d=DDAT[curAlb];html+=`<div class="alb-banner"><div class="alb-label">${d.label}</div><div class="alb-saga">${d.saga}</div></div>`;}
-  if(curSub==='cdz_albums'&&curAlb){const d=CDAT[curAlb];html+=`<div class="alb-banner" style="border-left-color:#2563eb"><div class="alb-label" style="color:#60a5fa">${d.label}</div><div class="alb-saga">${d.saga}</div></div>`;}
+  // Para DB y CDZ: mostrar TODOS los álbumes lado a lado, solo holos
+  if(curSub==='dbz_albums'||curSub==='cdz_albums'){
+    const dat=curSub==='dbz_albums'?DDAT:CDAT;
+    html+=`<div class="tbl-multi">`;
+    for(const key of Object.keys(dat)){
+      const d=dat[key];
+      const hI=curSub==='dbz_albums'
+        ? d.holos.map((n,i)=>{const id=`${key}_h${i}`;return{id,name:n,num:`Holo #${i+1}`,holo:true,img:CUS[id]||HOLO_REAL[id]||null};})
+        : d.holos.map((n,i)=>({id:`${key}_h${i}`,name:n,num:`#${i+1}`,holo:true}));
+      const rows=hI.map(renderTableRow).filter(Boolean).join('');
+      html+=`<div class="tbl-wrap"><div class="sec-title norm-t" style="font-size:10px;margin-bottom:4px">${d.label.toUpperCase()}<div class="sec-line"></div></div><table class="figs"><thead><tr><th>✓</th><th>#</th><th>Nombre</th></tr></thead><tbody>${rows||'<tr><td colspan=3 style="opacity:.4;text-align:center">Nada</td></tr>'}</tbody></table></div>`;
+    }
+    html+=`</div>`;
+  } else {
 
-  const useTable = curSub==='dbz_albums'||curSub==='cdz_albums'||curSub==='sp'||curSub==='poke1'||curSub==='poke2'||curSub==='postales'||curSub==='tazos1'||curSub==='tazos2'||curSub==='giga'||curSub==='lenti';
+  const useTable = curSub==='sp'||curSub==='poke1'||curSub==='poke2'||curSub==='postales'||curSub==='tazos1'||curSub==='tazos2'||curSub==='giga'||curSub==='lenti';
 
-  const forceTable = curSub==='cdz_albums';
   for(const sec of secs){
     const isHolo=sec.l&&(sec.l.includes('Holo')||sec.l.includes('Lenticular')||sec.l.includes('Brillante'));
-    if(sec.l) html+=`<div class="sec-title ${isHolo&&!forceTable?'holo-t':'norm-t'}">${isHolo&&!forceTable?'✦ ':''}${sec.l.toUpperCase()}<div class="sec-line"></div></div>`;
-    if(isHolo && !forceTable){
+    if(sec.l) html+=`<div class="sec-title ${isHolo?'holo-t':'norm-t'}">${isHolo?'✦ ':''}${sec.l.toUpperCase()}<div class="sec-line"></div></div>`;
+    if(isHolo){
       const cards=sec.items.map(renderHoloCard).filter(Boolean).join('');
       html+=cards?`<div class="grid">${cards}</div>`:`<div class="empty">Nada que mostrar</div>`;
-    } else if(useTable || forceTable){
+    } else if(useTable){
       const rows=sec.items.map(renderTableRow).filter(Boolean).join('');
       html+=rows?`<div class="tbl-wrap"><table class="figs"><thead><tr><th>✓</th><th>#</th><th>Nombre</th></tr></thead><tbody>${rows}</tbody></table></div>`:`<div class="empty">Nada que mostrar</div>`;
     } else {
       const cards=sec.items.map(renderGridCard).filter(Boolean).join('');
       html+=cards?`<div class="grid">${cards}</div>`:`<div class="empty">Nada que mostrar</div>`;
     }
+  }
   }
   document.getElementById('content').innerHTML=html;
 }
