@@ -887,10 +887,6 @@ function toggleReadOnly(){
   }
 }
 
-// Auto-detect ?readonly=1 in URL
-if(window.location.search.includes('readonly=1')){
-  document.addEventListener('DOMContentLoaded',()=>toggleReadOnly());
-}
 
 function setView(v){
   viewMode=v;
