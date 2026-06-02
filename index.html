@@ -2252,38 +2252,6 @@ function clearImg(){delete CUS[editId];save();document.getElementById('imgModal'
 function getItems(sub, alb){
   if(sub==='postales') return [{l:null,items:POSTALES}];
   if(sub==='tazos1')   return [{l:null,items:TAZOS1}];
-const LENTI = [
-  {id:'le_1',name:'Venusaur',num:'Lenticular #01 · #3 Venusaur',img:HOLO_REAL['le_3_1']||PA(3),holo:true},
-  {id:'le_2',name:'Charizard',num:'Lenticular #02 · #6 Charizard',img:HOLO_REAL['le_6_2']||PA(6),holo:true},
-  {id:'le_3',name:'Blastoise',num:'Lenticular #03 · #9 Blastoise',img:HOLO_REAL['le_9_3']||PA(9),holo:true},
-  {id:'le_4',name:'Caterpie',num:'Lenticular #04 · #10 Caterpie',img:HOLO_REAL['le_10_4']||PA(10),holo:true},
-  {id:'le_5',name:'Pidgeot',num:'Lenticular #05 · #18 Pidgeot',img:HOLO_REAL['le_18_5']||PA(18),holo:true},
-  {id:'le_6',name:'Raichu',num:'Lenticular #06 · #26 Raichu',img:HOLO_REAL['le_26_6']||PA(26),holo:true},
-  {id:'le_7',name:'Golbat',num:'Lenticular #07 · #42 Golbat',img:HOLO_REAL['le_42_7']||PA(42),holo:true},
-  {id:'le_8',name:'Oddish',num:'Lenticular #08 · #43 Oddish',img:HOLO_REAL['le_43_8']||PA(43),holo:true},
-  {id:'le_9',name:'Paras',num:'Lenticular #09 · #46 Paras',img:HOLO_REAL['le_46_9']||PA(46),holo:true},
-  {id:'le_10',name:'Meowth',num:'Lenticular #10 · #52 Meowth',img:HOLO_REAL['le_52_10']||PA(52),holo:true},
-  {id:'le_11',name:'Golduck',num:'Lenticular #11 · #55 Golduck',img:HOLO_REAL['le_55_11']||PA(55),holo:true},
-  {id:'le_12',name:'Primeape',num:'Lenticular #12 · #57 Primeape',img:HOLO_REAL['le_57_12']||PA(57),holo:true},
-  {id:'le_13',name:'Growlithe',num:'Lenticular #13 · #58 Growlithe',img:HOLO_REAL['le_58_13']||PA(58),holo:true},
-  {id:'le_14',name:'Poliwrath',num:'Lenticular #14 · #62 Poliwrath',img:HOLO_REAL['le_62_14']||PA(62),holo:true},
-  {id:'le_15',name:'Abra',num:'Lenticular #15 · #63 Abra',img:HOLO_REAL['le_63_15']||PA(63),holo:true},
-  {id:'le_16',name:'Machoke',num:'Lenticular #16 · #67 Machoke',img:HOLO_REAL['le_67_16']||PA(67),holo:true},
-  {id:'le_17',name:'Graveler',num:'Lenticular #17 · #75 Graveler',img:HOLO_REAL['le_75_17']||PA(75),holo:true},
-  {id:'le_18',name:'Grimer',num:'Lenticular #18 · #88 Grimer',img:HOLO_REAL['le_88_18']||PA(88),holo:true},
-  {id:'le_19',name:'Gengar',num:'Lenticular #19 · #94 Gengar',img:HOLO_REAL['le_94_19']||PA(94),holo:true},
-  {id:'le_20',name:'Onix',num:'Lenticular #20 · #95 Onix',img:HOLO_REAL['le_95_20']||PA(95),holo:true},
-  {id:'le_21',name:'Exeggutor',num:'Lenticular #21 · #103 Exeggutor',img:HOLO_REAL['le_103_21']||PA(103),holo:true},
-  {id:'le_22',name:'Marowak',num:'Lenticular #22 · #105 Marowak',img:HOLO_REAL['le_105_22']||PA(105),holo:true},
-  {id:'le_23',name:'Hitmonlee',num:'Lenticular #23 · #106 Hitmonlee',img:HOLO_REAL['le_106_23']||PA(106),holo:true},
-  {id:'le_24',name:'Rhyhorn',num:'Lenticular #24 · #111 Rhyhorn',img:HOLO_REAL['le_111_24']||PA(111),holo:true},
-  {id:'le_25',name:'Kabuto',num:'Lenticular #25 · #140 Kabuto',img:HOLO_REAL['le_140_25']||PA(140),holo:true},
-  {id:'le_26',name:'Snorlax',num:'Lenticular #26 · #143 Snorlax',img:HOLO_REAL['le_143_26']||PA(143),holo:true},
-  {id:'le_27',name:'Dragonair',num:'Lenticular #27 · #148 Dragonair',img:HOLO_REAL['le_148_27']||PA(148),holo:true},
-  {id:'le_28',name:'Mewtwo',num:'Lenticular #28 · #150 Mewtwo',img:HOLO_REAL['le_150_28']||PA(150),holo:true},
-  {id:'le_29',name:'Misty',num:'Lenticular #29 · #0 Misty',img:HOLO_REAL['PK1_hC']||null,holo:true},
-  {id:'le_30',name:'Ash',num:'Lenticular #30 · #0 Ash',img:HOLO_REAL['PK1_hA']||null,holo:true}
-];
 if(sub==='tazos2')   return [{l:'100 Tazos Lenticulares · #52 Meowth al #151 Mew',items:TAZOS2}];
   if(sub==='tazos2')   return [{l:null,items:TAZOS2}];
   if(sub==='lenti')    return [{l:'30 Lenticulares 3D · Cadenas Evolutivas',items:LENTI}];
