@@ -862,6 +862,9 @@ function load(){
           // But also push any local items not in Sheets back up
           const localData = JSON.parse(localStorage.getItem('mc4_local')||'{}');
           const merged = Object.assign({}, localData, sheetsData);
+          // Siempre aplicar preset de postales (no están en Sheets)
+          Object.keys(POSTALES_PRESET).forEach(k=>{merged[k]=POSTALES_PRESET[k];});
+          [2,4,5,14,16,27,28,32,41,53,61,62,80,81,84,86,99,104,111,115,133].forEach(i=>{delete merged['po_'+i];});
           ST = merged;
           localStorage.setItem('mc4_local', JSON.stringify(ST));
           // Push merged state back to Sheets if local had extra items
