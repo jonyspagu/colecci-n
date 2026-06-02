@@ -1616,55 +1616,8 @@ map((n,i)=>({id:`st_${i}`,name:n,num:`Tarjeta #${i+1}`}));
 
 
 // ===== ITEMS GETTER =====
-function getItems(sub, alb){
-  if(sub==='postales') return [{l:null,items:POSTALES}];
-  if(sub==='tazos1')   return [{l:null,items:TAZOS1}];
-if(sub==='tazos2')   return [{l:'100 Tazos Lenticulares · #52 Meowth al #151 Mew',items:TAZOS2}];
-  if(sub==='tazos2')   return [{l:null,items:TAZOS2}];
-  if(sub==='lenti')    return [{l:'30 Lenticulares 3D · Cadenas Evolutivas',items:LENTI}];
-  if(sub==='giga')     return [{l:null,items:GIGA}];
-  if(sub==='poke1')    return [
-    {l:'8 Holos Especiales Brillantes',items:PK1_HOLOS.map(it=>({...it,img:HOLO_REAL[it.id]||null}))},
-    {l:'151 Figuritas Normales',items:PKM151.map(([n,i])=>({id:`pk1_${i}`,name:n,num:`#${String(i).padStart(3,'0')}`,img:PA(i)}))}
-  ];
-  if(sub==='poke3') return [
-    {l:'64 Troqueladas Armables',items:PK3_TROQ},
-    {l:'183 Figuritas Normales',items:PK3_NORM}
-  ];
-  if(sub==='poke2') return [
-    {l:'8 Figuritas Doradas · Medallas de la Liga',items:PK2_HOLOS.slice(0,8).map(it=>({...it,img:HOLO_REAL[it.id]||null}))},
-    {l:'23 Figuritas Transparentes',items:PK2_HOLOS.slice(8)},
-    {l:'210 Figuritas Normales · Johto',items:JOHTO.map(([n,i])=>({id:`pk2_${i}`,name:n,num:`#${String(i).padStart(3,'0')}`,img:PA(i)}))}
-  ];
-  if(sub==='sp')       return [{l:'Muñecos · 36 piezas',items:SP_M},{l:'Tarjetas · 18 piezas',items:SP_T}];
-  if(sub==='dbz_albums'){
-    const a=alb||'DB1',d=DDAT[a];
-    const hI=d.holos.map((n,i)=>{const id=`${a}_h${i}`;return{id,name:n,num:`Holo #${i+1}`,holo:true,img:CUS[id]||HOLO_REAL[id]||null};});
-    const nI=Array.from({length:d.total-12},(_,i)=>({id:`${a}_n${i+1}`,name:`Figurita #${i+1}`,num:`#${i+1}`}));
-    return [{l:`12 Holos Holográficas`,items:hI},{l:`${d.total-12} Figuritas Normales`,items:nI}];
-  }
-  if(sub==='cdz_albums'){
-    const a=alb||'CDZ1',d=CDAT[a];
-    const hLabel=d.holoLabel||'Especiales';
-    const hI=d.holos.map((n,i)=>({id:`${a}_h${i}`,name:n,num:`#${i+1}`,holo:true,img:null}));
-    const normCount=d.total-d.holos.length;
-    const nI=Array.from({length:normCount},(_,i)=>({id:`${a}_n${i+1}`,name:`Figurita #${i+1}`,num:`#${i+1}`}));
-    return [{l:hLabel,items:hI},{l:`${normCount} Figuritas Normales`,items:nI}];
-  }
-  return [];
-}
 
 // count entire franchise
-function countCur(){
-  const sq=q.toLowerCase();
-  let h=0,t=0;
-  const albs=curSub==='dbz_albums'?Object.keys(DDAT):curSub==='cdz_albums'?Object.keys(CDAT):[null];
-  const albsToCount=curAlb?[curAlb]:albs;
-  for(const a of albsToCount)for(const s of getItems(curSub,a))for(const it of s.items){
-    if(sq&&!it.name.toLowerCase().includes(sq))continue;t++;if(ST[it.id])h++;
-  }
-  return{h,t};
-}
 
 // ===== UI =====
 
@@ -1681,9 +1634,6 @@ function countCur(){
 // ===== STATS =====
 
 
-function frColor(fr){
-  return fr==='poke'?'#f5c518':fr==='dbz'?'#ea580c':fr==='cdz'?'#2563eb':'#9333ea';
-}
 
 
 // ===== FERIA MODE =====
