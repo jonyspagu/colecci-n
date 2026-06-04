@@ -1054,7 +1054,7 @@ function render(){
 
   const forceTable = curSub==='cdz_albums';
   for(const sec of secs){
-    const isHolo=sec.l&&(sec.l.includes('Holo')||sec.l.includes('Lenticular')||sec.l.includes('Brillante'));
+    const isHolo=sec.l&&(sec.l.includes('Holo')||sec.l.includes('Lenticular')||sec.l.includes('Brillante'))&&!useTable;
     if(sec.l) html+=`<div class="sec-title ${isHolo&&!forceTable?'holo-t':'norm-t'}">${isHolo&&!forceTable?'✦ ':''}${sec.l.toUpperCase()}<div class="sec-line"></div></div>`;
     if(isHolo && !forceTable){
       const cards=sec.items.map(renderHoloCard).filter(Boolean).join('');
