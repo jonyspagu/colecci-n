@@ -568,7 +568,8 @@ const CDAT = {
     label:"CDZ 1 · 1995 Navarrete",
     saga:"Torneo Galáctico · Caballeros de Plata · 12 Casas del Zodiaco",
     holos:[
-      "Holograma A","Holograma B","Holograma C","Holograma D","Holograma E","Holograma F",
+      "Holograma A","Holograma B","Holograma C","Holograma D",
+      "Holograma E · Caballero de Cristal","Holograma F",
       "Holograma G","Holograma H","Holograma I","Holograma J",
       "Holograma K · Armadura de Dragón","Holograma L · Armadura de Phoenix",
       "Dorado #217","Dorado #218","Dorado #219","Dorado #220","Dorado #221","Dorado #222",
@@ -1227,8 +1228,8 @@ function renderFeria(){
         <div style="background:${col}33;color:${col};font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px">Faltan ${items.length}</div>
       </div>`;
 
-    const holos = items.filter(it => it.holo);
-    const normals = items.filter(it => !it.holo);
+    const holos = sec.sub==='lenti' ? [] : items.filter(it => it.holo);
+    const normals = sec.sub==='lenti' ? items : items.filter(it => !it.holo);
 
     if(holos.length){
       html2 += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:6px;margin-bottom:8px">`;
@@ -1286,8 +1287,8 @@ function exportFeria(){
     
     lines.push(`📌 ${sec.label} (faltan ${items.length})`);
     
-    const holos = items.filter(it => it.holo);
-    const normals = items.filter(it => !it.holo);
+    const holos = sec.sub==='lenti' ? [] : items.filter(it => it.holo);
+    const normals = sec.sub==='lenti' ? items : items.filter(it => !it.holo);
     
     if(holos.length){
       lines.push('  ✦ HOLOS: ' + holos.map(it => it.name).join(', '));
