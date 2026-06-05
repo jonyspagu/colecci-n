@@ -568,7 +568,7 @@ const CDAT = {
     label:"CDZ 1 · 1995 Navarrete",
     saga:"Torneo Galáctico · Caballeros de Plata · 12 Casas del Zodiaco",
     holos:[
-      "Holograma A","Holograma B","Holograma C","Holograma D",
+      "Holograma A","Holograma B · Marin","Holograma C","Holograma D",
       "Holograma E · Caballero de Cristal","Holograma F",
       "Holograma G","Holograma H","Holograma I","Holograma J",
       "Holograma K · Armadura de Dragón","Holograma L · Armadura de Phoenix",
@@ -1142,6 +1142,26 @@ function renderStats(){
   }
   html+='</div>';
 
+  // ===== LOGROS / PROGRESO =====
+  const secStats=sections.map(sec=>{const c=countSection(sec.sub,sec.alb);return{sec,h:c.h,t:c.t,miss:c.t-c.h};});
+  const completed=secStats.filter(s=>s.t>0&&s.miss===0);
+  const nearly=secStats.filter(s=>s.miss>0).sort((a,b)=>a.miss-b.miss);
+  let logros='';
+  if(completed.length){
+    logros+=`<div style="display:flex;align-items:center;gap:8px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:10px;padding:10px 14px;margin-bottom:10px">
+      <span style="font-size:20px">🏆</span>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;color:#22c55e;font-weight:700">${completed.length} ${completed.length===1?'colección completada':'colecciones completadas'}</div>
+    </div>`;
+  }
+  if(nearly.length){
+    const n=nearly[0];const col=frColor(n.sec.fr);
+    logros+=`<div style="display:flex;align-items:center;gap:8px;background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.3);border-radius:10px;padding:10px 14px;margin-bottom:10px;cursor:pointer" onclick="goToSection('${n.sec.fr}','${n.sec.sub}',${n.sec.alb?`'${n.sec.alb}'`:'null'})">
+      <span style="font-size:20px">🔥</span>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;color:#f97316;font-weight:700">¡Te ${n.miss===1?'falta':'faltan'} ${n.miss} para completar ${n.sec.label}!</div>
+    </div>`;
+  }
+  if(logros) html+=`<div style="margin-bottom:16px">${logros}</div>`;
+
   // Detail rows per collection
   html+=`<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:10px;overflow:hidden">
     <div style="padding:10px 14px;border-bottom:1px solid var(--border);font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:var(--text3)">DETALLE POR COLECCIÓN</div>`;
@@ -1160,7 +1180,7 @@ function renderStats(){
       </div>
       <div style="text-align:right;flex-shrink:0">
         <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--text)">${h}<span style="font-size:11px;color:var(--text3)">/${t}</span></div>
-        <div style="font-size:10px;color:${missing>0?'#f97316':'#22c55e'}">${missing>0?`faltan ${missing}`:'✓ completa'}</div>
+        <div style="font-size:10px;color:${missing>0?'#f97316':'#22c55e'}">${missing===0?'✓ completa':missing<=3?`🔥 ¡${missing===1?'falta 1':'faltan '+missing}!`:`faltan ${missing}`}</div>
       </div>
       <div style="font-family:'Bebas Neue',sans-serif;font-size:14px;color:${col};min-width:36px;text-align:right">${pct}%</div>
     </div>`;
