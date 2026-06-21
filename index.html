@@ -1060,9 +1060,11 @@ function renderNumTile(it){
   if(q&&!String(it.name||'').toLowerCase().includes(q))return'';
   const m=String(it.num||'').match(/#\s*0*(\d+)/);
   const code=m?m[1]:'';
+  const generic=/^figurita/i.test(String(it.name||''));
+  const showName=it.name&&!generic;
   return`<div class="num-tile ${hv?'have':''}" onclick="tog('${it.id}')">
     ${code?`<div class="nt-num">${code}</div>`:''}
-    <div class="nt-name">${it.name}</div>
+    ${showName?`<div class="nt-name">${it.name}</div>`:''}
     <div class="nt-lbl">${hv?'✓ TENGO':'FALTA'}</div>
   </div>`;
 }
@@ -1110,7 +1112,7 @@ function render(){
     } else if(curSub==='postales'){
       const tiles=sec.items.map(renderPostalTile).filter(Boolean).join('');
       html+=tiles?`<div class="postal-grid">${tiles}</div>`:`<div class="empty">Nada que mostrar</div>`;
-    } else if(curSub==='tazos1'||curSub==='tazos2'||curSub==='giga'||curSub==='lenti'){
+    } else if(curSub==='tazos1'||curSub==='tazos2'||curSub==='giga'||curSub==='lenti'||curSub==='dbz_albums'){
       const tiles=sec.items.map(renderNumTile).filter(Boolean).join('');
       html+=tiles?`<div class="num-grid">${tiles}</div>`:`<div class="empty">Nada que mostrar</div>`;
     } else if(useTable || forceTable){
