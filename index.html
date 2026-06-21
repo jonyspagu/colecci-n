@@ -1035,7 +1035,7 @@ function renderPostalTile(it){
   const hv=!!ST[it.id];
   if(fil==='have'&&!hv)return'';
   if(fil==='miss'&&hv)return'';
-  const num=String(it.id.replace('po_','')).padStart(3,'0');
+  const num=String(it.id.replace('po_',''));
   if(q&&!num.includes(q))return'';
   return`<div class="postal-tile ${hv?'have':''}" onclick="tog('${it.id}')">
     <div class="pt-num">${num}</div>
@@ -1048,8 +1048,8 @@ function renderTableRow(it){
   if(fil==='have'&&!hv)return'';
   if(fil==='miss'&&hv)return'';
   if(q&&!it.name.toLowerCase().includes(q))return'';
-  const m=String(it.num||'').match(/#\s*\d+/);
-  const code=m?m[0].replace(/\s+/,''):(it.num||'');
+  const m=String(it.num||'').match(/#\s*0*(\d+)/);
+  const code=m?'#'+m[1]:(it.num||'');
   return`<tr class="${hv?'have':''}" onclick="tog('${it.id}')">
     <td><div class="row-chk">${hv?'✓':''}</div></td>
     <td><span class="row-num">${code}</span></td>
