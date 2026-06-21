@@ -132,6 +132,16 @@ tr.have .row-num{color:#4ade80}
 .postal-tile.have{border-color:#22c55e;background:linear-gradient(135deg,#15331e,#1c4a2a)}
 .postal-tile.have .pt-num{color:#4ade80}
 .postal-tile.have .pt-lbl{color:#22c55e}
+.num-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:10px;padding:6px 0}
+.num-tile{cursor:pointer;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid #34343f;background:#1a1a24;padding:14px 8px;transition:transform .12s,border-color .12s;user-select:none;text-align:center;min-height:104px}
+.num-tile:active{transform:scale(.95)}
+.num-tile .nt-num{font-size:30px;font-weight:900;letter-spacing:.5px;color:#e7e7f0;font-family:'Arial Black','Barlow Condensed',sans-serif;line-height:1}
+.num-tile .nt-name{font-size:13px;font-weight:700;color:#c9c9d4;margin-top:6px;line-height:1.15}
+.num-tile .nt-lbl{font-size:9px;font-weight:800;letter-spacing:1px;color:#f97316;margin-top:6px}
+.num-tile.have{border-color:#22c55e;background:linear-gradient(135deg,#15331e,#1c4a2a)}
+.num-tile.have .nt-num{color:#4ade80}
+.num-tile.have .nt-name{color:#fff}
+.num-tile.have .nt-lbl{color:#22c55e}
 
 /* MODAL */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
@@ -1043,6 +1053,20 @@ function renderPostalTile(it){
   </div>`;
 }
 
+function renderNumTile(it){
+  const hv=!!ST[it.id];
+  if(fil==='have'&&!hv)return'';
+  if(fil==='miss'&&hv)return'';
+  if(q&&!String(it.name||'').toLowerCase().includes(q))return'';
+  const m=String(it.num||'').match(/#\s*0*(\d+)/);
+  const code=m?m[1]:'';
+  return`<div class="num-tile ${hv?'have':''}" onclick="tog('${it.id}')">
+    ${code?`<div class="nt-num">${code}</div>`:''}
+    <div class="nt-name">${it.name}</div>
+    <div class="nt-lbl">${hv?'✓ TENGO':'FALTA'}</div>
+  </div>`;
+}
+
 function renderTableRow(it){
   const hv=!!ST[it.id];
   if(fil==='have'&&!hv)return'';
@@ -1086,6 +1110,9 @@ function render(){
     } else if(curSub==='postales'){
       const tiles=sec.items.map(renderPostalTile).filter(Boolean).join('');
       html+=tiles?`<div class="postal-grid">${tiles}</div>`:`<div class="empty">Nada que mostrar</div>`;
+    } else if(curSub==='tazos1'||curSub==='tazos2'||curSub==='giga'||curSub==='lenti'){
+      const tiles=sec.items.map(renderNumTile).filter(Boolean).join('');
+      html+=tiles?`<div class="num-grid">${tiles}</div>`:`<div class="empty">Nada que mostrar</div>`;
     } else if(useTable || forceTable){
       const rows=sec.items.map(renderTableRow).filter(Boolean).join('');
       html+=rows?`<div class="tbl-wrap"><table class="figs"><thead><tr><th>✓</th><th>#</th><th>Nombre</th></tr></thead><tbody>${rows}</tbody></table></div>`:`<div class="empty">Nada que mostrar</div>`;
