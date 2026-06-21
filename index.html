@@ -106,17 +106,18 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 
 /* TABLE */
 .tbl-wrap{overflow-x:auto}
-table.figs{width:100%;border-collapse:collapse;font-size:12px}
-table.figs th{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1px;color:#8a9bb5;text-transform:uppercase;padding:8px 10px;border-bottom:1px solid #2a2840;text-align:left;background:#13131c}
-table.figs td{padding:7px 10px;border-bottom:1px solid #1e1e2e;vertical-align:middle;cursor:pointer;transition:background .1s}
+table.figs{width:100%;border-collapse:collapse}
+table.figs th{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:1.5px;color:#9bb0cf;text-transform:uppercase;padding:11px 12px;border-bottom:2px solid #2a2840;text-align:left;background:#13131c;font-weight:700}
+table.figs td{padding:11px 12px;border-bottom:1px solid #20202e;vertical-align:middle;cursor:pointer;transition:background .1s}
 table.figs tr:hover td{background:#1a1a2a}
-table.figs tr.have td{background:rgba(201,168,76,.07)}
-table.figs tr.have td:first-child{border-left:3px solid var(--gold)}
-.row-chk{width:24px;height:24px;border-radius:50%;background:#1a1a2a;border:1.5px solid #3a3650;display:inline-flex;align-items:center;justify-content:center;font-size:11px}
-tr.have .row-chk{background:var(--gold);border-color:var(--gold2);color:#0a0a0f;font-weight:700}
-.row-name{color:#d4d0c8;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px}
+table.figs tr.have td{background:rgba(34,197,94,.09)}
+table.figs tr.have td:first-child{border-left:3px solid #22c55e}
+.row-chk{width:30px;height:30px;border-radius:50%;background:#1a1a2a;border:2px solid #3a3650;display:inline-flex;align-items:center;justify-content:center;font-size:15px}
+tr.have .row-chk{background:#22c55e;border-color:#16a34a;color:#06210f;font-weight:900}
+.row-name{color:#dcd8d0;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:17px}
 tr.have .row-name{color:#fff}
-.row-num{color:#6a7890;font-size:12px;font-family:'Barlow Condensed',sans-serif;white-space:nowrap;font-weight:600}
+.row-num{color:#cdd6e6;font-size:18px;font-family:'Arial Black','Barlow Condensed',sans-serif;white-space:nowrap;font-weight:900;letter-spacing:.5px}
+tr.have .row-num{color:#4ade80}
 
 /* FERIA */
 .feria-bar{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:7px;padding:6px 12px;font-size:11px;color:#fca5a5;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
@@ -1047,9 +1048,11 @@ function renderTableRow(it){
   if(fil==='have'&&!hv)return'';
   if(fil==='miss'&&hv)return'';
   if(q&&!it.name.toLowerCase().includes(q))return'';
+  const m=String(it.num||'').match(/#\s*\d+/);
+  const code=m?m[0].replace(/\s+/,''):(it.num||'');
   return`<tr class="${hv?'have':''}" onclick="tog('${it.id}')">
     <td><div class="row-chk">${hv?'✓':''}</div></td>
-    <td><span class="row-num">${it.num}</span></td>
+    <td><span class="row-num">${code}</span></td>
     <td><span class="row-name">${it.name}</span></td>
   </tr>`;
 }
