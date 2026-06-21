@@ -123,6 +123,14 @@ tr.have .row-name{color:#fff}
 .dot{width:6px;height:6px;border-radius:50%;background:#ef4444;flex-shrink:0;animation:pulse 1.5s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .empty{text-align:center;padding:30px;color:var(--text3);font-size:13px}
+.postal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:10px;padding:6px 0}
+.postal-tile{cursor:pointer;aspect-ratio:1;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid #34343f;background:#1a1a24;transition:transform .12s,border-color .12s;user-select:none}
+.postal-tile:active{transform:scale(.94)}
+.postal-tile .pt-num{font-size:34px;font-weight:900;letter-spacing:1px;color:#e7e7f0;font-family:'Arial Black','Barlow Condensed',sans-serif;line-height:1}
+.postal-tile .pt-lbl{font-size:10px;font-weight:800;margin-top:5px;letter-spacing:1px;color:#f97316}
+.postal-tile.have{border-color:#22c55e;background:linear-gradient(135deg,#15331e,#1c4a2a)}
+.postal-tile.have .pt-num{color:#4ade80}
+.postal-tile.have .pt-lbl{color:#22c55e}
 
 /* MODAL */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
@@ -455,7 +463,7 @@ const PKM151 = [["Bulbasaur",1],["Ivysaur",2],["Venusaur",3],["Charmander",4],["
 const JOHTO = [["Chikorita",152],["Bayleef",153],["Meganium",154],["Cyndaquil",155],["Quilava",156],["Typhlosion",157],["Totodile",158],["Croconaw",159],["Feraligatr",160],["Sentret",161],["Furret",162],["Hoothoot",163],["Noctowl",164],["Ledyba",165],["Ledian",166],["Spinarak",167],["Ariados",168],["Crobat",169],["Chinchou",170],["Lanturn",171],["Pichu",172],["Cleffa",173],["Igglybuff",174],["Togepi",175],["Togetic",176],["Natu",177],["Xatu",178],["Mareep",179],["Flaaffy",180],["Ampharos",181],["Bellossom",182],["Marill",183],["Azumarill",184],["Sudowoodo",185],["Politoed",186],["Hoppip",187],["Skiploom",188],["Jumpluff",189],["Aipom",190],["Sunkern",191],["Sunflora",192],["Yanma",193],["Wooper",194],["Quagsire",195],["Espeon",196],["Umbreon",197],["Murkrow",198],["Slowking",199],["Misdreavus",200],["Unown",201],["Wobbuffet",202],["Girafarig",203],["Pineco",204],["Forretress",205],["Dunsparce",206],["Gligar",207],["Steelix",208],["Snubbull",209],["Granbull",210],["Qwilfish",211],["Scizor",212],["Shuckle",213],["Heracross",214],["Sneasel",215],["Teddiursa",216],["Ursaring",217],["Slugma",218],["Magcargo",219],["Swinub",220],["Piloswine",221],["Corsola",222],["Remoraid",223],["Octillery",224],["Delibird",225],["Mantine",226],["Skarmory",227],["Houndour",228],["Houndoom",229],["Kingdra",230],["Phanpy",231],["Donphan",232],["Porygon2",233],["Stantler",234],["Smeargle",235],["Tyrogue",236],["Hitmontop",237],["Smoochum",238],["Elekid",239],["Magby",240],["Miltank",241],["Blissey",242],["Raikou",243],["Entei",244],["Suicune",245],["Larvitar",246],["Pupitar",247],["Tyranitar",248],["Lugia",249],["Ho-oh",250],["Celebi",251]];
 
 // ===== ITEMS =====
-const POSTALES = PKM151.slice(0,138).map(([n,i])=>({id:`po_${i}`,name:n,num:`Postal #${String(i).padStart(3,'0')}`,img:PA(i)}));
+const POSTALES = Array.from({length:138},(_,k)=>{const i=k+1;const nm=`Postal #${String(i).padStart(3,'0')}`;return {id:`po_${i}`,name:nm,num:nm};});
 const TAZOS1 = [
   ["Bulbasaur",1],["Ivysaur",2],["Venusaur",3],["Charmander",4],["Charmeleon",5],["Charizard",6],
   ["Squirtle",7],["Wartortle",8],["Blastoise",9],["Caterpie",10],["Metapod",11],["Butterfree",12],
@@ -1022,6 +1030,18 @@ function renderGridCard(it){
   </div>`;
 }
 
+function renderPostalTile(it){
+  const hv=!!ST[it.id];
+  if(fil==='have'&&!hv)return'';
+  if(fil==='miss'&&hv)return'';
+  const num=String(it.id.replace('po_','')).padStart(3,'0');
+  if(q&&!num.includes(q))return'';
+  return`<div class="postal-tile ${hv?'have':''}" onclick="tog('${it.id}')">
+    <div class="pt-num">${num}</div>
+    <div class="pt-lbl">${hv?'✓ TENGO':'FALTA'}</div>
+  </div>`;
+}
+
 function renderTableRow(it){
   const hv=!!ST[it.id];
   if(fil==='have'&&!hv)return'';
@@ -1060,6 +1080,9 @@ function render(){
     if(isHolo && !forceTable){
       const cards=sec.items.map(renderHoloCard).filter(Boolean).join('');
       html+=cards?`<div class="grid">${cards}</div>`:`<div class="empty">Nada que mostrar</div>`;
+    } else if(curSub==='postales'){
+      const tiles=sec.items.map(renderPostalTile).filter(Boolean).join('');
+      html+=tiles?`<div class="postal-grid">${tiles}</div>`:`<div class="empty">Nada que mostrar</div>`;
     } else if(useTable || forceTable){
       const rows=sec.items.map(renderTableRow).filter(Boolean).join('');
       html+=rows?`<div class="tbl-wrap"><table class="figs"><thead><tr><th>✓</th><th>#</th><th>Nombre</th></tr></thead><tbody>${rows}</tbody></table></div>`:`<div class="empty">Nada que mostrar</div>`;
