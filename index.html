@@ -142,6 +142,9 @@ tr.have .row-num{color:#4ade80}
 .num-tile.have .nt-num{color:#4ade80}
 .num-tile.have .nt-name{color:#fff}
 .num-tile.have .nt-lbl{color:#22c55e}
+.name-tile{justify-content:space-between}
+.name-tile .nt-title{font-size:14px;font-weight:800;color:#dfe3ee;line-height:1.2;font-family:'Barlow Condensed',sans-serif}
+.name-tile.have .nt-title{color:#fff}
 
 /* MODAL */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
@@ -920,7 +923,7 @@ function getItems(sub, alb){
   if(sub==='cdz_albums'){
     const a=alb||'CDZ1',d=CDAT[a];
     const hLabel=d.holoLabel||'Especiales';
-    const hI=d.holos.map((n,i)=>({id:`${a}_h${i}`,name:n,num:`#${i+1}`,holo:true,img:null}));
+    const hI=d.holos.map((n,i)=>({id:`${a}_h${i}`,name:n,num:`#${i+1}`,holo:true,nameTile:true,img:null}));
     const normCount=d.total-d.holos.length;
     const nI=Array.from({length:normCount},(_,i)=>({id:`${a}_n${i+1}`,name:`Figurita #${i+1}`,num:`#${i+1}`}));
     return [{l:hLabel,items:hI},{l:`${normCount} Figuritas Normales`,items:nI}];
@@ -1060,6 +1063,12 @@ function renderNumTile(it){
   if(q&&!String(it.name||'').toLowerCase().includes(q))return'';
   let code=it.code;
   if(!code){const m=String(it.num||'').match(/#\s*0*(\d+)/);code=m?m[1]:'';}
+  if(it.nameTile){
+    return`<div class="num-tile name-tile ${hv?'have':''}" onclick="tog('${it.id}')">
+      <div class="nt-title">${it.name}</div>
+      <div class="nt-lbl">${hv?'✓ TENGO':'FALTA'}</div>
+    </div>`;
+  }
   const generic=/^figurita/i.test(String(it.name||''));
   const showName=it.name&&!generic&&!it.holo;
   return`<div class="num-tile ${hv?'have':''}" onclick="tog('${it.id}')">
@@ -1112,7 +1121,7 @@ function render(){
     } else if(curSub==='postales'){
       const tiles=sec.items.map(renderPostalTile).filter(Boolean).join('');
       html+=tiles?`<div class="postal-grid">${tiles}</div>`:`<div class="empty">Nada que mostrar</div>`;
-    } else if(curSub==='tazos1'||curSub==='tazos2'||curSub==='giga'||curSub==='lenti'||curSub==='dbz_albums'){
+    } else if(curSub==='tazos1'||curSub==='tazos2'||curSub==='giga'||curSub==='lenti'||curSub==='dbz_albums'||curSub==='cdz_albums'){
       const tiles=sec.items.map(renderNumTile).filter(Boolean).join('');
       html+=tiles?`<div class="num-grid">${tiles}</div>`:`<div class="empty">Nada que mostrar</div>`;
     } else if(useTable || forceTable){
