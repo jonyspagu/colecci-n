@@ -38,36 +38,36 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .sub-tabs-wrap{overflow-x:auto;scrollbar-width:none;margin-top:10px}
 .sub-tabs-wrap::-webkit-scrollbar{display:none}
 .sub-tabs{display:flex;gap:3px;min-width:max-content}
-.stab{background:none;border:none;cursor:pointer;padding:4px 12px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.8px;color:#6a7890;border-radius:5px;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;text-transform:uppercase}
+.stab{background:none;border:none;cursor:pointer;padding:7px 14px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.8px;color:#6a7890;border-radius:5px;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;text-transform:uppercase}
 .stab:hover{color:#c8c4b8}
 .stab.active{color:var(--gold);border-bottom-color:var(--gold)}
 
 .main{padding:14px;max-width:960px;margin:0 auto}
 
 /* STATS */
-.stats-bar{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);padding:10px 14px;margin-bottom:12px}
-.stats-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.stat-nums{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold2)}
-.stat-nums span{color:var(--text3);font-size:13px}
-.prog-bar{flex:1;min-width:80px;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
-.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold2));border-radius:2px;transition:width .4s}
-.pct{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--gold);min-width:32px;text-align:right}
+.stats-bar{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);padding:16px 20px;margin-bottom:14px}
+.stats-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.stat-nums{font-family:'Bebas Neue',sans-serif;font-size:38px;color:var(--gold2);line-height:1}
+.stat-nums span{color:var(--text3);font-size:20px}
+.prog-bar{flex:1;min-width:120px;height:12px;background:var(--bg3);border-radius:6px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold2));border-radius:6px;transition:width .4s}
+.pct{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:800;color:var(--gold);min-width:54px;text-align:right}
 
 /* FILTERS */
-.filter-row{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
-.fbtn{background:var(--bg2);border:1px solid var(--border);color:var(--text2);border-radius:20px;padding:4px 12px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.8px;cursor:pointer;transition:all .15s}
+.filter-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.fbtn{background:var(--bg2);border:1px solid var(--border);color:var(--text2);border-radius:22px;padding:9px 18px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;letter-spacing:.8px;cursor:pointer;transition:all .15s}
 .fbtn:hover{border-color:var(--gold-dim);color:var(--gold)}
 .fbtn.active{background:rgba(201,168,76,.15);border-color:var(--gold);color:var(--gold)}
-.srch{background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:20px;padding:4px 12px;font-family:'Barlow',sans-serif;font-size:12px;outline:none;flex:1;min-width:120px;max-width:200px}
+.srch{background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:22px;padding:9px 16px;font-family:'Barlow',sans-serif;font-size:16px;outline:none;flex:1;min-width:160px;max-width:300px}
 .srch:focus{border-color:var(--gold-dim)}
 .srch::placeholder{color:var(--text3)}
 
 /* ALBUM BANNER */
-.alb-banner{margin-bottom:10px;padding:8px 12px;background:var(--bg2);border-radius:7px;border-left:3px solid var(--gold-dim);position:sticky;top:120px;z-index:50;box-shadow:0 4px 12px rgba(0,0,0,.4)}
-.alb-label{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--gold);font-weight:600;letter-spacing:.5px}
-.alb-saga{font-size:10px;color:var(--text3);margin-top:2px}
+.alb-banner{margin-bottom:12px;padding:14px 18px;background:var(--bg2);border-radius:10px;border-left:4px solid var(--gold-dim);position:sticky;top:120px;z-index:50;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.alb-label{font-family:'Barlow Condensed',sans-serif;font-size:20px;color:var(--gold);font-weight:700;letter-spacing:.5px}
+.alb-saga{font-size:14px;color:var(--text2);margin-top:4px}
 .alb-tabs-inner{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap}
-.atab{background:var(--bg2);border:1px solid var(--border);color:var(--text3);border-radius:6px;padding:4px 10px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
+.atab{background:var(--bg2);border:1px solid var(--border);color:var(--text3);border-radius:8px;padding:8px 16px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .15s;white-space:nowrap}
 .atab:hover{color:var(--text2)}
 .atab.active{border-color:var(--gold-dim);color:var(--gold);background:rgba(201,168,76,.1)}
 .atab.cdz-a.active{border-color:#3b82f6;color:#60a5fa;background:rgba(59,130,246,.1)}
@@ -265,7 +265,7 @@ tr.have .row-num{color:#4ade80}
   <div class="stats-bar">
     <div class="stats-row">
       <div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1px;color:#8a9bb5;text-transform:uppercase;font-weight:700">Progreso</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:1.5px;color:#9bb0cf;text-transform:uppercase;font-weight:700">Progreso</div>
         <div class="stat-nums" id="statNums">0 <span>/ 0</span></div>
       </div>
       <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
