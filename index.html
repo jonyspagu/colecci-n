@@ -562,15 +562,15 @@ const PK2_NORM  = JOHTO.map(([n,i])=>({id:`pk2_${i}`,name:n,num:`#${String(i).pa
 // DBZ Albums
 const DDAT = {
   DB1:{label:"Dragon Ball 1 · 1997",saga:"Infancia de Goku · Maestro Roshi · 1er Torneo de las Artes Marciales",
-    holos:["El Poderoso Pilaf","El Castillo Pilaf y su Torre Trampa","Goku, un Pequeño con Gran Poder","Bulma, la Mejor Amiga de Goku","La Malvada Bola","Puar, Amigo Fiel de Yamcha","Yamcha, Apuesto y Valiente Guerrero","Pilaf desea las Siete Esferas","Oolong, el Cobarde Cerdito","Mai, Secuaz de Pilaf","Shu, Esbirro del Malvado Pilaf","Goku en la Nube del Maestro Roshi"],
-    holoIds:[null,null,null,null,null,null,null,null,null,null,null,null],
+    holos:["Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo"],
+    holoNums:[100,101,102,103,104,105,106,107,108,109,110,111],
     total:287},
   DB2:{label:"Dragon Ball 2 · 1997",saga:"Patrulla Roja · El Luchador Nam · La Bestia Yirán · Piccolo Ve Cumplido",
-    holos:["Goku","Krillin","Yamcha","Maestro Roshi","Maestro Karin","Yajirobe","El Luchador Nam","El Poderoso Bacterio","La Bestia Yirán","El Malvado Piccolo","Piccolo Ve Cumplido Su Deseo","Mister Popo"],
-    holoIds:null,
-    holoLabel:"12 Holos",total:212},
+    holos:["Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo"],
+    holoNums:[1,33,40,60,74,81,107,139,153,166,173,212],
+    total:212},
   DBZ1:{label:"Dragon Ball Z 1 · 1998",saga:"Raditz · Nappa · Vegeta · Los Saiyajins llegan a la Tierra",
-    holos:["Goku","Vegeta","Piccolo","Gohan (niño)","Krillin","Nappa","Raditz","Yamcha","Ten Shin Han","Chaoz","Saibaman","Enma Daio"],total:212},
+    holos:["Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo"],holoNums:[26,30,44,66,70,88,103,116,140,185,189,207],total:212},
   DBZ2:{label:"Dragon Ball Z 2 · 1998",saga:"Viaje a Namek · Dodoria & Zarbon · Fuerzas Especiales Ginyu · Freezer",
     holos:["Transp.","Transp.","Transp.","Transp.","Transp.","Transp.","Transp.","Transp.","Transp.","Transp.","Transp.","Transp."],holoLetters:true,holoLabel:"12 Transparentes · A a L",total:212},
   DBZ3:{label:"Dragon Ball Z 3 · 2000",saga:"Super Saiyajin · Freezer 3ra y 4ta forma · Batalla final en Namek",
@@ -578,9 +578,7 @@ const DDAT = {
   DBZ4:{label:"Dragon Ball Z 4 · 2001",saga:"Trunks del Futuro · Androides 16, 17, 18, 19 y 20 · Cell 1ra forma",
     holos:["Holo","Holo","Holo","Holo","Holo","Holo"],holoNums:[31,43,58,171,201,216],total:212},
   DBZ5:{label:"Dragon Ball Z 5 · 2002",saga:"Torneo de Cell · Cell Perfecto · Gohan SSJ2 · Sacrificio de Goku",
-    holos:["Gohan SSJ2","Cell","Goku SSJ","Vegeta SSJ","Trunks","Piccolo","Krillin","Androide 18","Androide 16","Goku","Gotenks","Trunks Niño"],total:212},
-  DBZ6:{label:"Dragon Ball Z 6 · 2003",saga:"Majin Buu · Vegito · Gotenks SSJ3 · Goku SSJ3 · Kid Buu · Final",
-    holos:["Goku SSJ3","Vegito","Gogeta","Gotenks","Majin Buu","Kid Buu","Gohan Ultimate","Vegeta","Trunks Niño","Goten","Piccolo","Dende"],total:212},
+    holos:Array(64).fill("Armable"),holoPrefix:"Z",holoLabel:"64 Armables Dorados · Z1 a Z64",total:264},
 };
 const CDAT = {
   CDZ1:{
@@ -914,7 +912,7 @@ function getItems(sub, alb){
   if(sub==='dbz_albums'){
     const a=alb||'DB1',d=DDAT[a];
     const hN=d.holoNums||[];
-    const hI=d.holos.map((n,i)=>{const id=`${a}_h${i}`;let code;if(d.holoLetters)code=String.fromCharCode(65+i);else if(hN[i])code=String(hN[i]);else code=String(i+1);return{id,name:n,code,num:d.holoLetters?code:(hN[i]?`#${hN[i]}`:`Holo #${i+1}`),holo:true,img:CUS[id]||HOLO_REAL[id]||null};});
+    const hI=d.holos.map((n,i)=>{const id=`${a}_h${i}`;let code;if(d.holoPrefix)code=`${d.holoPrefix}${i+1}`;else if(d.holoLetters)code=String.fromCharCode(65+i);else if(hN[i])code=String(hN[i]);else code=String(i+1);return{id,name:n,code,num:(d.holoLetters||d.holoPrefix)?code:(hN[i]?`#${hN[i]}`:`Holo #${i+1}`),holo:true,img:CUS[id]||HOLO_REAL[id]||null};});
     const nCount=d.total-d.holos.length;
     const nI=Array.from({length:nCount},(_,i)=>({id:`${a}_n${i+1}`,name:`Figurita #${i+1}`,num:`#${i+1}`}));
     return [{l:d.holoLabel||`${d.holos.length} Holos Holográficas`,items:hI},{l:`${nCount} Figuritas Normales`,items:nI}];
