@@ -604,32 +604,22 @@ const CDAT = {
     label:"CDZ 2 · 1996 Ultra Figus",
     saga:"Saga de Asgard · Hilda de Polaris · Dioses Guerreros del Norte",
     holos:[
-      "Holograma #73","Holograma #108","Holograma #131",
-      "Holograma #207 · Hyoga de Cisne","Holograma #207 · Shun de Andrómeda",
-      "Holograma #207 · Caballero Dorado","Holograma #207 · Caballero Dorado","Holograma #207 · Caballero Dorado",
-      "Dorado #206 · Catalea Marine","Dorado #207 · Eli de Sin","Dorado #208 · Cristos de Triaena",
-      "Dorado #209 · Kanon de Llamadas","Dorado #210 · Uras de Chrysaor",
-      "Dorado #211 · Gregori Marine","Dorado #212 · Sorrento de Sirena",
-      "Dorado #213","Dorado #214","Dorado #233 · Los 5 Caballeros"
+      "44","58","73","131",
+      ...Array.from({length:8},(_,k)=>String(205+k))
     ],
     holoIds:null,
-    holoLabel:"Hologramas + 7 Generales de Poseidón (Dorados)",
+    holoLabel:"Hologramas · Metalizados",
     total:220
   },
   CDZ3:{
     label:"CDZ 3 · 1997 Navarrete",
     saga:"Saga de Poseidón · Pilares del Océano · La Película & La Serie de TV",
     holos:[
-      "La Serie #12","La Serie #24","La Serie #39","La Serie #47","La Serie #63","La Serie #82","La Serie #91",
-      "La Película · Holograma #4","La Película · Holograma #18","La Película · Holograma #63",
-      "La Película · Holograma #78","La Película · Holograma #110",
-      "Dorado #209","Dorado #210","Dorado #212","Dorado #214","Dorado #217",
-      "Transparente A","Transparente E","Transparente G","Transparente H",
-      "Transparente I","Transparente K","Transparente L","Transparente M",
-      "Transparente N","Transparente O","Transparente P"
+      "4","18","78","110",
+      ...Array.from({length:16},(_,k)=>String.fromCharCode(65+k))
     ],
     holoIds:null,
-    holoLabel:"Holos La Serie · La Película · Dorados · Transparentes",
+    holoLabel:"Hologramas · Transparentes (A-P)",
     total:210
   },
 };
@@ -923,7 +913,7 @@ function getItems(sub, alb){
   if(sub==='cdz_albums'){
     const a=alb||'CDZ1',d=CDAT[a];
     const hLabel=d.holoLabel||'Especiales';
-    const hI=d.holos.map((n,i)=>{const id=`${a}_h${i}`;const nm=String(n).match(/^#?(\d+)$/);if(nm)return{id,name:`#${nm[1]}`,code:nm[1],num:`#${nm[1]}`,holo:true,img:null};return{id,name:n,num:`#${i+1}`,holo:true,nameTile:true,img:null};});
+    const hI=d.holos.map((n,i)=>{const id=`${a}_h${i}`;const nm=String(n).match(/^#?(\d+)$/);if(nm)return{id,name:`#${nm[1]}`,code:nm[1],num:`#${nm[1]}`,holo:true,img:null};const lt=String(n).match(/^([A-Za-z])$/);if(lt){const L=lt[1].toUpperCase();return{id,name:L,code:L,num:L,holo:true,img:null};}return{id,name:n,num:`#${i+1}`,holo:true,nameTile:true,img:null};});
     const normCount=d.total-d.holos.length;
     const nI=Array.from({length:normCount},(_,i)=>({id:`${a}_n${i+1}`,name:`Figurita #${i+1}`,num:`#${i+1}`}));
     return [{l:hLabel,items:hI},{l:`${normCount} Figuritas Normales`,items:nI}];
