@@ -592,12 +592,12 @@ const CDAT = {
       "Holograma E · Caballero de Cristal","Holograma F · Armadura de Cisne",
       "Holograma G · Caballero Shun","Holograma H · Caballero Shiryu","Holograma I · Caballero Ikki","Holograma J · Armadura de Andrómeda",
       "Holograma K · Armadura de Dragón","Holograma L · Armadura de Phoenix",
-      "Dorado #217","Dorado #218","Dorado #219","Dorado #220","Dorado #221","Dorado #222",
-      "Dorado #223","Dorado #224","Dorado #225","Dorado #226","Dorado #227","Dorado #228",
-      "Dorado #229","Dorado #230","Dorado #231","Dorado #232","Dorado #233"
+      ...Array.from({length:13},(_,k)=>String(209+k)),
+      "228","233","239","240",
+      ...Array.from({length:18},(_,k)=>String(256+k))
     ],
     holoIds:null,
-    holoLabel:"12 Hologramas (A-L) + 17 Stickers Dorados (#217-#233)",
+    holoLabel:"Hologramas (A-L) · Plateados · Dorados",
     total:273
   },
   CDZ2:{
@@ -923,7 +923,7 @@ function getItems(sub, alb){
   if(sub==='cdz_albums'){
     const a=alb||'CDZ1',d=CDAT[a];
     const hLabel=d.holoLabel||'Especiales';
-    const hI=d.holos.map((n,i)=>({id:`${a}_h${i}`,name:n,num:`#${i+1}`,holo:true,nameTile:true,img:null}));
+    const hI=d.holos.map((n,i)=>{const id=`${a}_h${i}`;const nm=String(n).match(/^#?(\d+)$/);if(nm)return{id,name:`#${nm[1]}`,code:nm[1],num:`#${nm[1]}`,holo:true,img:null};return{id,name:n,num:`#${i+1}`,holo:true,nameTile:true,img:null};});
     const normCount=d.total-d.holos.length;
     const nI=Array.from({length:normCount},(_,i)=>({id:`${a}_n${i+1}`,name:`Figurita #${i+1}`,num:`#${i+1}`}));
     return [{l:hLabel,items:hI},{l:`${normCount} Figuritas Normales`,items:nI}];
