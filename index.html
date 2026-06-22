@@ -572,11 +572,11 @@ const DDAT = {
   DBZ1:{label:"Dragon Ball Z 1 · 1998",saga:"Raditz · Nappa · Vegeta · Los Saiyajins llegan a la Tierra",
     holos:["Goku","Vegeta","Piccolo","Gohan (niño)","Krillin","Nappa","Raditz","Yamcha","Ten Shin Han","Chaoz","Saibaman","Enma Daio"],total:212},
   DBZ2:{label:"Dragon Ball Z 2 · 1998",saga:"Viaje a Namek · Dodoria & Zarbon · Fuerzas Especiales Ginyu · Freezer",
-    holos:["Goku","Gohan (niño)","Krillin","Piccolo","Vegeta","Freezer","Ginyu","Dodoria","Zarbon","Recoome","Dende","Nail"],total:212},
+    holos:["Transp.","Transp.","Transp.","Transp.","Transp.","Transp.","Transp.","Transp.","Transp.","Transp.","Transp.","Transp."],holoLetters:true,holoLabel:"12 Transparentes · A a L",total:212},
   DBZ3:{label:"Dragon Ball Z 3 · 2000",saga:"Super Saiyajin · Freezer 3ra y 4ta forma · Batalla final en Namek",
-    holos:["Goku SSJ","Freezer","Piccolo Fused","Gohan (niño)","Vegeta","Krillin","Ginyu","Goku","Zarbon","Dende","Trunks","Bulma"],total:212},
+    holos:["Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo"],holoNums:[18,32,50,70,99,130,144,158,186,203,208,216],total:212},
   DBZ4:{label:"Dragon Ball Z 4 · 2001",saga:"Trunks del Futuro · Androides 16, 17, 18, 19 y 20 · Cell 1ra forma",
-    holos:["Trunks","Vegeta SSJ","Androide 18","Androide 17","Androide 16","Goku SSJ","Gohan (niño)","Piccolo","Krillin","Cell","Bulma","Goten"],total:212},
+    holos:["Holo","Holo","Holo","Holo","Holo","Holo"],holoNums:[31,43,58,171,201,216],total:212},
   DBZ5:{label:"Dragon Ball Z 5 · 2002",saga:"Torneo de Cell · Cell Perfecto · Gohan SSJ2 · Sacrificio de Goku",
     holos:["Gohan SSJ2","Cell","Goku SSJ","Vegeta SSJ","Trunks","Piccolo","Krillin","Androide 18","Androide 16","Goku","Gotenks","Trunks Niño"],total:212},
   DBZ6:{label:"Dragon Ball Z 6 · 2003",saga:"Majin Buu · Vegito · Gotenks SSJ3 · Goku SSJ3 · Kid Buu · Final",
@@ -913,9 +913,11 @@ function getItems(sub, alb){
   if(sub==='sp')       return [{l:'Muñecos · 36 piezas',items:SP_M},{l:'Tarjetas · 18 piezas',items:SP_T}];
   if(sub==='dbz_albums'){
     const a=alb||'DB1',d=DDAT[a];
-    const hI=d.holos.map((n,i)=>{const id=`${a}_h${i}`;return{id,name:n,num:`Holo #${i+1}`,holo:true,img:CUS[id]||HOLO_REAL[id]||null};});
-    const nI=Array.from({length:d.total-12},(_,i)=>({id:`${a}_n${i+1}`,name:`Figurita #${i+1}`,num:`#${i+1}`}));
-    return [{l:`12 Holos Holográficas`,items:hI},{l:`${d.total-12} Figuritas Normales`,items:nI}];
+    const hN=d.holoNums||[];
+    const hI=d.holos.map((n,i)=>{const id=`${a}_h${i}`;let code;if(d.holoLetters)code=String.fromCharCode(65+i);else if(hN[i])code=String(hN[i]);else code=String(i+1);return{id,name:n,code,num:d.holoLetters?code:(hN[i]?`#${hN[i]}`:`Holo #${i+1}`),holo:true,img:CUS[id]||HOLO_REAL[id]||null};});
+    const nCount=d.total-d.holos.length;
+    const nI=Array.from({length:nCount},(_,i)=>({id:`${a}_n${i+1}`,name:`Figurita #${i+1}`,num:`#${i+1}`}));
+    return [{l:d.holoLabel||`${d.holos.length} Holos Holográficas`,items:hI},{l:`${nCount} Figuritas Normales`,items:nI}];
   }
   if(sub==='cdz_albums'){
     const a=alb||'CDZ1',d=CDAT[a];
@@ -1058,10 +1060,10 @@ function renderNumTile(it){
   if(fil==='have'&&!hv)return'';
   if(fil==='miss'&&hv)return'';
   if(q&&!String(it.name||'').toLowerCase().includes(q))return'';
-  const m=String(it.num||'').match(/#\s*0*(\d+)/);
-  const code=m?m[1]:'';
+  let code=it.code;
+  if(!code){const m=String(it.num||'').match(/#\s*0*(\d+)/);code=m?m[1]:'';}
   const generic=/^figurita/i.test(String(it.name||''));
-  const showName=it.name&&!generic;
+  const showName=it.name&&!generic&&!it.holo;
   return`<div class="num-tile ${hv?'have':''}" onclick="tog('${it.id}')">
     ${code?`<div class="nt-num">${code}</div>`:''}
     ${showName?`<div class="nt-name">${it.name}</div>`:''}
