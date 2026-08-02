@@ -280,10 +280,6 @@ tr.have .row-num{color:#4ade80}
     <button class="fbtn" data-f="have" onclick="setF('have')">✓ Tengo</button>
     <button class="fbtn" data-f="miss" onclick="setF('miss')">📍 Me falta</button>
     <input class="srch" type="text" placeholder="Buscar..." id="srch" oninput="render()">
-    <div style="margin-left:auto;display:flex;gap:4px">
-      <button id="viewGrid" onclick="setView('grid')" title="Vista grilla" style="background:rgba(201,168,76,.15);border:1px solid var(--gold);color:var(--gold);border-radius:6px;padding:4px 9px;cursor:pointer;font-size:14px">⊞</button>
-      <button id="viewAlbum" onclick="setView('album')" title="Vista álbum" style="background:var(--bg2);border:1px solid var(--border);color:var(--text3);border-radius:6px;padding:4px 9px;cursor:pointer;font-size:14px">📖</button>
-    </div>
   </div>
   <div id="feriaBar" style="display:none" class="feria-bar"><div class="dot"></div>MODO FERIA — solo lo que te falta</div>
   <div id="readonlyBanner" style="display:none" class="readonly-banner">👁 MODO SOLO LECTURA — compartí esta página sin que puedan modificar tu colección · <a href="?" style="color:#93c5fd;font-size:10px">Salir</a></div>
@@ -492,20 +488,7 @@ const TAZOS1 = [
   {id:'t1_51',name:'Ash Ketchum',num:'Tazo #51 · Exclusivo',img:HOLO_REAL['PK1_hA']||null}
 ]);
 const TAZOS2 = [];
-const GIGA = [
-  ["Bulbasaur",1],["Ivysaur",2],["Charmander",4],["Charmeleon",5],["Charizard",6],["Wartortle",8],["Blastoise",9],["Butterfree",12],
-  ["Kakuna",14],["Beedrill",15],["Pidgeotto",17],["Pidgeot",18],["Raticate",20],["Fearow",22],["Arbok",24],["Raichu",26],
-  ["Sandslash",28],["Nidorina",30],["Nidoqueen",31],["Nidorino",33],["Nidoking",34],["Clefairy",35],["Clefable",36],["Ninetales",38],
-  ["Wigglytuff",40],["Golbat",42],["Gloom",44],["Parasect",47],["Venomoth",49],["Diglett",50],["Meowth",52],["Persian",53],
-  ["Golduck",55],["Growlithe",58],["Arcanine",59],["Poliwhirl",61],["Poliwrath",62],["Kadabra",64],["Alakazam",65],["Machamp",68],
-  ["Tentacruel",73],["Psyduck",54],["Victreebel",71],["Tentacool",72],["Golem",76],["Rapidash",78],["Slowbro",80],["Magneton",82],
-  ["Farfetch'd",83],["Doduo",84],["Dodrio",85],["Seel",86],["Dewgong",87],["Muk",89],["Shellder",90],["Cloyster",91],
-  ["Haunter",93],["Gengar",94],["Onix",95],["Hypno",97],["Kingler",99],["Exeggcute",102],["Exeggutor",103],["Marowak",105],
-  ["Hitmonlee",106],["Hitmonchan",107],["Lickitung",108],["Weezing",110],["Rhydon",112],["Chansey",113],["Tangela",114],["Kangaskhan",115],
-  ["Seadra",117],["Seaking",119],["Starmie",121],["Mr. Mime",122],["Scyther",123],["Jynx",124],["Electabuzz",125],["Magmar",126],
-  ["Pinsir",127],["Tauros",128],["Gyarados",130],["Lapras",131],["Ditto",132],["Vaporeon",134],["Jolteon",135],["Flareon",136],
-  ["Omastar",139],["Omanyte",138],["Kabutops",141],["Dragonair",148],["Snorlax",143],["Articuno",144],["Zapdos",145],["Moltres",146]
-]
+const GIGA = PKM151.concat([["Ash",152]])
 const LENTI = [
   {id:'le_1', name:'Venusaur', num:'#003 · Venusaur', img:PA(3), holo:true},
   {id:'le_2', name:'Charizard', num:'#006 · Charizard', img:PA(6), holo:true},
@@ -891,7 +874,7 @@ function getItems(sub, alb){
   if(sub==='postales') return [{l:null,items:POSTALES}];
   if(sub==='tazos1')   return [{l:null,items:TAZOS1}];
   if(sub==='tazos2')   return [{l:null,items:TAZOS2}];
-  if(sub==='lenti')    return [{l:'30 Lenticulares 3D · Cadenas Evolutivas',items:LENTI}];
+  if(sub==='lenti')    return [{l:'Lenticulares 3D · Cadenas Evolutivas',items:LENTI.map(it=>({...it,nameTile:true}))}];
   if(sub==='giga')     return [{l:null,items:GIGA.map(([n,i])=>({id:`giga_${i}`,name:n,num:`#${String(i).padStart(3,'0')} · ${n}`}))}];
   if(sub==='poke1')    return [
     {l:'8 Holos Especiales Brillantes',items:PK1_HOLOS.map(it=>({...it,img:HOLO_REAL[it.id]||null}))},
