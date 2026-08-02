@@ -520,6 +520,38 @@ const LENTI = [
   {id:'le_28', name:'Mewtwo', num:'#150 · Mewtwo', img:PA(150), holo:true},
   {id:'le_29', name:'Misty', num:'Misty', img:PA(1), holo:true},
   {id:'le_30', name:'Ash', num:'Ash', img:PA(1), holo:true}
+];
+const LENTI_NEW = [
+  {id:'lent_1',  name:'Machop → Machoke → Machamp'},
+  {id:'lent_2',  name:'Snorlax'},
+  {id:'lent_3',  name:'Abra → Kadabra → Alakazam'},
+  {id:'lent_4',  name:'Kabuto → Kabutops'},
+  {id:'lent_5',  name:'Exeggcute → Exeggutor'},
+  {id:'lent_6',  name:'Rhyhorn → Rhydon'},
+  {id:'lent_7',  name:'Oddish → Gloom → Vileplume'},
+  {id:'lent_8',  name:'Hitmonlee + Hitmonchan'},
+  {id:'lent_9',  name:'Ash'},
+  {id:'lent_10', name:'Misty'},
+  {id:'lent_11', name:'Bulbasaur → Ivysaur → Venusaur'},
+  {id:'lent_12', name:'Charmander → Charmeleon → Charizard'},
+  {id:'lent_13', name:'Squirtle → Wartortle → Blastoise'},
+  {id:'lent_14', name:'Growlithe → Arcanine'},
+  {id:'lent_15', name:'Pikachu → Raichu'},
+  {id:'lent_16', name:'Psyduck → Golduck'},
+  {id:'lent_17', name:'Meowth → Persian'},
+  {id:'lent_18', name:'Gastly → Haunter → Gengar'},
+  {id:'lent_19', name:'Mewtwo'},
+  {id:'lent_20', name:'Geodude → Graveler → Golem'},
+  {id:'lent_21', name:'Zubat → Golbat'},
+  {id:'lent_22', name:'Dratini → Dragonair → Dragonite'},
+  {id:'lent_23', name:'Caterpie → Metapod → Butterfree'},
+  {id:'lent_24', name:'Cubone → Marowak'},
+  {id:'lent_25', name:'Pidgey → Pidgeotto → Pidgeot'},
+  {id:'lent_26', name:'Onix'},
+  {id:'lent_27', name:'Mankey → Primeape'},
+  {id:'lent_28', name:'Grimer → Muk'},
+  {id:'lent_29', name:'Poliwag → Poliwhirl → Poliwrath'},
+  {id:'lent_30', name:'Paras → Parasect'}
 ];const PK1_HOLOS = [
   {id:'PK1_hA',name:'Ash',           num:'Holo A',holo:true},
   {id:'PK1_hB',name:'Pikachu',       num:'Holo B',holo:true},
@@ -874,7 +906,7 @@ function getItems(sub, alb){
   if(sub==='postales') return [{l:null,items:POSTALES}];
   if(sub==='tazos1')   return [{l:null,items:TAZOS1}];
   if(sub==='tazos2')   return [{l:null,items:TAZOS2}];
-  if(sub==='lenti')    return [{l:'Lenticulares 3D · Cadenas Evolutivas',items:LENTI.map(it=>({...it,nameTile:true}))}];
+  if(sub==='lenti')    return [{l:'Lenticulares 3D · Cadenas Evolutivas · Kanto',items:LENTI_NEW.map(it=>({...it,nameTile:true}))}];
   if(sub==='giga')     return [{l:null,items:GIGA.map(([n,i])=>({id:`giga_${i}`,name:n,num:`#${String(i).padStart(3,'0')} · ${n}`}))}];
   if(sub==='poke1')    return [
     {l:'8 Holos Especiales Brillantes',items:PK1_HOLOS.map(it=>({...it,img:HOLO_REAL[it.id]||null}))},
