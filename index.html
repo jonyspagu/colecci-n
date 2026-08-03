@@ -1214,6 +1214,16 @@ function countSection(sub,alb){
   for(const s of getItems(sub,alb))for(const it of s.items){t++;if(ST[it.id])h++;}
   return{h,t,pct:t?Math.round(h/t*100):0};
 }
+// Conteo para el RESUMEN: en álbumes cuenta solo especiales (holos/dorados/transp), no las figuritas normales
+function countSectionStat(sub,alb){
+  const specialsOnly = sub==='poke1'||sub==='poke2'||sub==='dbz_albums'||sub==='cdz_albums';
+  let h=0,t=0;
+  for(const s of getItems(sub,alb))for(const it of s.items){
+    if(specialsOnly && !it.holo) continue;
+    t++; if(ST[it.id]) h++;
+  }
+  return{h,t,pct:t?Math.round(h/t*100):0};
+}
 
 function frColor(fr){
   return fr==='poke'?'#f5c518':fr==='dbz'?'#ea580c':fr==='cdz'?'#2563eb':'#9333ea';
@@ -1227,7 +1237,8 @@ function renderStats(){
   document.getElementById('pctLbl').textContent='';
 
   const sections=getAllSections();
-  const ga=countAll();
+  const ga={h:0,t:0};
+  sections.forEach(sec=>{const c=countSectionStat(sec.sub,sec.alb);ga.h+=c.h;ga.t+=c.t;});
   const gPct=ga.t?Math.round(ga.h/ga.t*100):0;
 
   let html=`
@@ -1249,7 +1260,7 @@ function renderStats(){
     const frSubs=Object.keys(frVal.subs);
     for(const sub of frSubs){
       const albs=sub==='dbz_albums'?Object.keys(DDAT):sub==='cdz_albums'?Object.keys(CDAT):[null];
-      for(const a of albs){for(const s of getItems(sub,a))for(const it of s.items){ft++;if(ST[it.id])fh++;}}
+      for(const a of albs){const c=countSectionStat(sub,a);ft+=c.t;fh+=c.h;}
     }
     const fpct=ft?Math.round(fh/ft*100):0;
     const col=frColor(frKey);
@@ -1266,7 +1277,7 @@ function renderStats(){
   html+='</div>';
 
   // ===== LOGROS / PROGRESO =====
-  const secStats=sections.map(sec=>{const c=countSection(sec.sub,sec.alb);return{sec,h:c.h,t:c.t,miss:c.t-c.h};});
+  const secStats=sections.map(sec=>{const c=countSectionStat(sec.sub,sec.alb);return{sec,h:c.h,t:c.t,miss:c.t-c.h};});
   const completed=secStats.filter(s=>s.t>0&&s.miss===0);
   const nearly=secStats.filter(s=>s.miss>0).sort((a,b)=>a.miss-b.miss);
   let logros='';
@@ -1289,7 +1300,7 @@ function renderStats(){
   html+=`<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:10px;overflow:hidden">
     <div style="padding:10px 14px;border-bottom:1px solid var(--border);font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:var(--text3)">DETALLE POR COLECCIÓN <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0;text-transform:none;color:var(--text3)">· más cerca de completar primero</span></div>`;
 
-  const detail=sections.map(sec=>{const c=countSection(sec.sub,sec.alb);return{sec,h:c.h,t:c.t,pct:c.pct,missing:c.t-c.h};});
+  const detail=sections.map(sec=>{const c=countSectionStat(sec.sub,sec.alb);return{sec,h:c.h,t:c.t,pct:c.pct,missing:c.t-c.h};});
   detail.sort((a,b)=>(b.pct-a.pct)||(a.missing-b.missing));
   for(const row of detail){
     const sec=row.sec, h=row.h, t=row.t, pct=row.pct;
