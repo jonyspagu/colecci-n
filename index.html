@@ -483,20 +483,21 @@ const JOHTO = [["Chikorita",152],["Bayleef",153],["Meganium",154],["Cyndaquil",1
 // ===== ITEMS =====
 const POSTALES = Array.from({length:138},(_,k)=>{const i=k+1;const nm=`Postal #${String(i).padStart(3,'0')}`;return {id:`po_${i}`,name:nm,num:nm};});
 const TAZOS1 = [
-  ["Bulbasaur",1],["Ivysaur",2],["Venusaur",3],["Charmander",4],["Charmeleon",5],["Charizard",6],
-  ["Squirtle",7],["Wartortle",8],["Blastoise",9],["Caterpie",10],["Metapod",11],["Butterfree",12],
-  ["Weedle",13],["Kakuna",14],["Beedrill",15],["Pidgey",16],["Pidgeotto",17],["Pidgeot",18],
-  ["Rattata",19],["Raticate",20],["Spearow",21],["Fearow",22],["Ekans",23],["Arbok",24],
-  ["Pikachu",25],["Raichu",26],["Sandshrew",27],["Sandslash",28],["Nidoran♀",29],["Nidorina",30],
-  ["Nidoqueen",31],["Nidoran♂",32],["Nidorino",33],["Nidoking",34],["Clefairy",35],["Clefable",36],
-  ["Vulpix",37],["Ninetales",38],["Jigglypuff",39],["Wigglytuff",40],["Zubat",41],["Golbat",42],
-  ["Oddish",43],["Gloom",44],["Vileplume",45],["Paras",46],["Parasect",47],["Venonat",48],
-  ["Venomoth",49],["Diglett",50]
-].map(([n,i],idx)=>({id:`t1_${i}`,name:n,num:`Tazo #${String(idx+1).padStart(2,'0')}`,img:PA(i)})).concat([
-  {id:'t1_51',name:'Ash Ketchum',num:'Tazo #51 · Exclusivo',img:HOLO_REAL['PK1_hA']||null}
+  ["Bulbasaur",1],["Charmander",4],["Squirtle",7],["Caterpie",10],["Weedle",13],
+  ["Pidgey",16],["Rattata",19],["Spearow",21],["Ekans",23],["Pikachu",25],
+  ["Sandshrew",27],["Nidoran♀",29],["Nidoran♂",32],["Clefairy",35],["Vulpix",37],
+  ["Jigglypuff",39],["Zubat",41],["Oddish",43],["Paras",46],["Venonat",48],
+  ["Diglett",50],["Meowth",52],["Psyduck",54],["Mankey",56],["Growlithe",58],
+  ["Poliwag",60],["Abra",63],["Machop",66],["Bellsprout",69],["Tentacool",72],
+  ["Geodude",74],["Ponyta",77],["Slowpoke",79],["Magnemite",81],["Doduo",84],
+  ["Seel",86],["Grimer",88],["Shellder",90],["Gastly",92],["Drowzee",96],
+  ["Krabby",98],["Voltorb",100],["Exeggcute",102],["Cubone",104],["Rhyhorn",111],
+  ["Horsea",116],["Goldeen",118],["Staryu",120],["Magikarp",129],["Eevee",133]
+].map(([n,i])=>({id:`t1_${i}`,name:n,num:`#${i}`,img:PA(i)})).concat([
+  {id:'t1_51',name:'Ash',num:'Ash',img:HOLO_REAL['PK1_hA']||null}
 ]);
 const TAZOS2 = [];
-const GIGA = PKM151.concat([["Ash",152]])
+const GIGA = PKM151.slice(0,150).concat([["Ash",152]])
 const LENTI = [
   {id:'le_1', name:'Venusaur', num:'#003 · Venusaur', img:PA(3), holo:true},
   {id:'le_2', name:'Charizard', num:'#006 · Charizard', img:PA(6), holo:true},
@@ -682,8 +683,8 @@ const FRANCHISES = {
     subs: {
       postales:  {label:"Postales",     icon:"🃏"},
       tazos1:    {label:"Tazos 1",      icon:"⚡"},
-      lenti:     {label:"Lenticulares", icon:"🌀"},
       giga:      {label:"Gigantazos",   icon:"🔴"},
+      lenti:     {label:"Lenticulares", icon:"🌀"},
       poke1:     {label:"Álbum 1",      icon:"📗"},
       poke2:     {label:"Álbum 2",      icon:"📘"},
     }
@@ -1198,7 +1199,7 @@ function getAllSections(){
   sections.push({fr:'poke',label:'Pokémon · Postales · 138 cartas',                    sub:'postales', alb:null});
   sections.push({fr:'poke',label:'Pokémon · Tazos Serie 1 · 51 tazos (Frenchitas)',    sub:'tazos1',   alb:null});
   sections.push({fr:'poke',label:'Pokémon · Movi-Tazos 3D · 30 lenticulares',          sub:'lenti',    alb:null});
-  sections.push({fr:'poke',label:'Pokémon · Gigantazos · 152 (151 + Ash)',              sub:'giga',     alb:null});
+  sections.push({fr:'poke',label:'Pokémon · Gigantazos · 151 (150 + Ash, sin Mew)',     sub:'giga',     alb:null});
   sections.push({fr:'poke',label:'Pokémon · Álbum 1 (1999 Navarrete) · ¡Atrápalo Ya!', sub:'poke1',    alb:null});
   sections.push({fr:'poke',label:'Pokémon · Álbum 2 (2000 Navarrete) · Medallas Liga',  sub:'poke2',    alb:null});
   Object.keys(DDAT).forEach(a=>sections.push({fr:'dbz',label:DDAT[a].label+' — '+DDAT[a].saga, sub:'dbz_albums', alb:a}));
