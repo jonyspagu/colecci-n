@@ -6,9 +6,9 @@
 <title>Colecciones Joni</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0a0a0f;--bg2:#111118;--bg3:#1a1a24;--gold:#c9a84c;--gold2:#e8c96a;--gold-dim:#7a6230;--text:#e8e4d8;--text2:#9a9588;--text3:#5a5650;--border:#2a2830;--border2:#3a3650;--holo:linear-gradient(135deg,#c084fc,#818cf8,#38bdf8,#34d399,#facc15,#f472b6,#c084fc);--r:10px;--poke:#f5c518;--dbz:#ea580c;--cdz:#2563eb;--sp:#9333ea}
+:root{--bg:#13141d;--bg2:#1c1e2a;--bg3:#282a39;--gold:#d4b45c;--gold2:#f0d27a;--gold-dim:#8a7038;--text:#f2efe6;--text2:#bcb8ac;--text3:#847f74;--border:#353748;--border2:#474658;--holo:linear-gradient(135deg,#c084fc,#818cf8,#38bdf8,#34d399,#facc15,#f472b6,#c084fc);--r:10px;--poke:#f5c518;--dbz:#f97316;--cdz:#3b82f6;--sp:#a855f7}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh}
+body{background:radial-gradient(1200px 600px at 50% -10%,#232538 0%,var(--bg) 55%) fixed,var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh}
 
 /* HEADER */
 .hdr{background:var(--bg2);border-bottom:1px solid var(--gold-dim);padding:12px 16px;position:sticky;top:0;z-index:100}
@@ -61,6 +61,14 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .srch{background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:22px;padding:9px 16px;font-family:'Barlow',sans-serif;font-size:16px;outline:none;flex:1;min-width:160px;max-width:300px}
 .srch:focus{border-color:var(--gold-dim)}
 .srch::placeholder{color:var(--text3)}
+.tools-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.tool-btn{background:var(--bg2);border:1px solid var(--border);color:var(--text2);border-radius:10px;padding:9px 14px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .15s}
+.tool-btn:hover{border-color:var(--gold-dim);color:var(--gold)}
+.tool-btn.go{background:rgba(34,197,94,.14);border-color:#22c55e;color:#4ade80}
+.tool-btn.go:hover{background:rgba(34,197,94,.24);color:#4ade80}
+.tool-in{background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 14px;font-family:'Barlow',sans-serif;font-size:15px;outline:none;flex:1;min-width:150px;max-width:260px}
+.tool-in:focus{border-color:#22c55e}
+.tool-in::placeholder{color:var(--text3)}
 
 /* ALBUM BANNER */
 .alb-banner{margin-bottom:12px;padding:14px 18px;background:var(--bg2);border-radius:10px;border-left:4px solid var(--gold-dim);position:sticky;top:120px;z-index:50;box-shadow:0 4px 12px rgba(0,0,0,.4)}
@@ -107,7 +115,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 /* TABLE */
 .tbl-wrap{overflow-x:auto}
 table.figs{width:100%;border-collapse:collapse}
-table.figs th{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:1.5px;color:#9bb0cf;text-transform:uppercase;padding:11px 12px;border-bottom:2px solid #2a2840;text-align:left;background:#13131c;font-weight:700}
+table.figs th{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:1.5px;color:#9bb0cf;text-transform:uppercase;padding:11px 12px;border-bottom:2px solid #2a2840;text-align:left;background:#20222f;font-weight:700}
 table.figs td{padding:11px 12px;border-bottom:1px solid #20202e;vertical-align:middle;cursor:pointer;transition:background .1s}
 table.figs tr:hover td{background:#1a1a2a}
 table.figs tr.have td{background:rgba(34,197,94,.09)}
@@ -125,7 +133,7 @@ tr.have .row-num{color:#4ade80}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .empty{text-align:center;padding:30px;color:var(--text3);font-size:13px}
 .postal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:10px;padding:6px 0}
-.postal-tile{cursor:pointer;aspect-ratio:1;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid #34343f;background:#1a1a24;transition:transform .12s,border-color .12s;user-select:none}
+.postal-tile{cursor:pointer;aspect-ratio:1;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid var(--border);background:#242636;transition:transform .12s,border-color .12s;user-select:none}
 .postal-tile:active{transform:scale(.94)}
 .postal-tile .pt-num{font-size:34px;font-weight:900;letter-spacing:1px;color:#e7e7f0;font-family:'Arial Black','Barlow Condensed',sans-serif;line-height:1}
 .postal-tile .pt-lbl{font-size:10px;font-weight:800;margin-top:5px;letter-spacing:1px;color:#f97316}
@@ -133,7 +141,7 @@ tr.have .row-num{color:#4ade80}
 .postal-tile.have .pt-num{color:#4ade80}
 .postal-tile.have .pt-lbl{color:#22c55e}
 .num-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:10px;padding:6px 0}
-.num-tile{cursor:pointer;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid #34343f;background:#1a1a24;padding:14px 8px;transition:transform .12s,border-color .12s;user-select:none;text-align:center;min-height:104px}
+.num-tile{cursor:pointer;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid var(--border);background:#242636;padding:14px 8px;transition:transform .12s,border-color .12s;user-select:none;text-align:center;min-height:104px}
 .num-tile:active{transform:scale(.95)}
 .num-tile .nt-num{font-size:30px;font-weight:900;letter-spacing:.5px;color:#e7e7f0;font-family:'Arial Black','Barlow Condensed',sans-serif;line-height:1}
 .num-tile .nt-name{font-size:13px;font-weight:700;color:#c9c9d4;margin-top:6px;line-height:1.15}
@@ -877,6 +885,43 @@ function save(){
   localStorage.setItem('mc4_imgs',JSON.stringify(CUS));
 }
 
+function itemCode(it){
+  if(it.code) return String(it.code);
+  const m=String(it.num||'').match(/#\s*0*(\d+)/);
+  if(m) return m[1];
+  return '';
+}
+function itemLabel(it){ const c=itemCode(it); return c||String(it.name||''); }
+
+function copyMissing(){
+  const secs=getItems(curSub,curAlb);
+  const out=[];
+  secs.forEach(s=>{ s.items.forEach(it=>{ if(!ST[it.id]) out.push(itemLabel(it)); }); });
+  if(!out.length){ showSyncStatus('✓ ¡No te falta ninguna!'); setTimeout(()=>showSyncStatus(''),3000); return; }
+  const secName=(curSub==='dbz_albums'||curSub==='cdz_albums')&&curAlb?curAlb:curSub;
+  const txt='Faltantes '+secName+' ('+out.length+'): '+out.join(', ');
+  const done=()=>{ showSyncStatus('✓ Copiado: '+out.length+' faltantes'); setTimeout(()=>showSyncStatus(''),3000); };
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done).catch(()=>{prompt('Copiá tus faltantes:',txt);}); }
+  else { prompt('Copiá tus faltantes:',txt); }
+}
+
+function quickMark(){
+  const el=document.getElementById('quickMark'); if(!el) return;
+  const str=el.value.trim(); if(!str){ return; }
+  const secs=getItems(curSub,curAlb);
+  const map={};
+  secs.forEach(s=>s.items.forEach(it=>{ const c=itemCode(it).toUpperCase(); if(c&&!(c in map)) map[c]=it.id; }));
+  const tokens=str.split(/[^A-Za-z0-9]+/).filter(Boolean);
+  let done=0; const miss=[];
+  tokens.forEach(t=>{ const key=(t.replace(/^0+/,'')||t).toUpperCase(); const id=map[key]||map[t.toUpperCase()];
+    if(id){ if(!ST[id]){ ST[id]=true; fetch(API+'?action=toggle&id='+encodeURIComponent(id)+'&value=true').catch(()=>{}); } done++; }
+    else miss.push(t); });
+  save(); render();
+  const q2=document.getElementById('quickMark'); if(q2) q2.value='';
+  showSyncStatus('✓ '+done+' marcadas'+(miss.length?' · no encontré: '+miss.join(', '):''));
+  setTimeout(()=>showSyncStatus(''),5000);
+}
+
 function tog(id){
   if(readOnly) return;
   const val = !ST[id];
@@ -1110,6 +1155,13 @@ function render(){
   let html='';
   const secs=getItems(curSub,curAlb);
 
+  // toolbar: copiar faltantes + marcado rápido
+  html+=`<div class="tools-row">
+    <button class="tool-btn" onclick="copyMissing()">📋 Copiar faltantes</button>
+    <input class="tool-in" id="quickMark" placeholder="Marcar: 31,58,201" onkeydown="if(event.key==='Enter'){quickMark();return false;}">
+    <button class="tool-btn go" onclick="quickMark()">✓ Marcar</button>
+  </div>`;
+
   // album banner
   if(curSub==='dbz_albums'&&curAlb){const d=DDAT[curAlb];html+=`<div class="alb-banner"><div class="alb-label">${d.label}</div><div class="alb-saga">${d.saga}</div></div>`;}
   if(curSub==='cdz_albums'&&curAlb){const d=CDAT[curAlb];html+=`<div class="alb-banner" style="border-left-color:#2563eb"><div class="alb-label" style="color:#60a5fa">${d.label}</div><div class="alb-saga">${d.saga}</div></div>`;}
@@ -1146,7 +1198,7 @@ function getAllSections(){
   sections.push({fr:'poke',label:'Pokémon · Postales · 138 cartas',                    sub:'postales', alb:null});
   sections.push({fr:'poke',label:'Pokémon · Tazos Serie 1 · 51 tazos (Frenchitas)',    sub:'tazos1',   alb:null});
   sections.push({fr:'poke',label:'Pokémon · Movi-Tazos 3D · 30 lenticulares',          sub:'lenti',    alb:null});
-  sections.push({fr:'poke',label:'Pokémon · Gigantazos · 100 tazos (#52 al #151)',      sub:'giga',     alb:null});
+  sections.push({fr:'poke',label:'Pokémon · Gigantazos · 152 (151 + Ash)',              sub:'giga',     alb:null});
   sections.push({fr:'poke',label:'Pokémon · Álbum 1 (1999 Navarrete) · ¡Atrápalo Ya!', sub:'poke1',    alb:null});
   sections.push({fr:'poke',label:'Pokémon · Álbum 2 (2000 Navarrete) · Medallas Liga',  sub:'poke2',    alb:null});
   Object.keys(DDAT).forEach(a=>sections.push({fr:'dbz',label:DDAT[a].label+' — '+DDAT[a].saga, sub:'dbz_albums', alb:a}));
@@ -1231,14 +1283,16 @@ function renderStats(){
   }
   if(logros) html+=`<div style="margin-bottom:16px">${logros}</div>`;
 
-  // Detail rows per collection
+  // Detail rows per collection — ordenado por más cerca de completar
   html+=`<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:10px;overflow:hidden">
-    <div style="padding:10px 14px;border-bottom:1px solid var(--border);font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:var(--text3)">DETALLE POR COLECCIÓN</div>`;
+    <div style="padding:10px 14px;border-bottom:1px solid var(--border);font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:var(--text3)">DETALLE POR COLECCIÓN <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0;text-transform:none;color:var(--text3)">· más cerca de completar primero</span></div>`;
 
-  for(const sec of sections){
-    const {h,t,pct}=countSection(sec.sub,sec.alb);
+  const detail=sections.map(sec=>{const c=countSection(sec.sub,sec.alb);return{sec,h:c.h,t:c.t,pct:c.pct,missing:c.t-c.h};});
+  detail.sort((a,b)=>{const ac=a.missing===0,bc=b.missing===0;if(ac!==bc)return ac?1:-1;if(a.missing!==b.missing)return a.missing-b.missing;return b.pct-a.pct;});
+  for(const row of detail){
+    const sec=row.sec, h=row.h, t=row.t, pct=row.pct;
     const col=frColor(sec.fr);
-    const missing=t-h;
+    const missing=row.missing;
     html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background=''" onclick="goToSection('${sec.fr}','${sec.sub}',${sec.alb?`'${sec.alb}'`:'null'})">
       <div style="width:3px;height:32px;background:${col};border-radius:2px;flex-shrink:0"></div>
       <div style="flex:1;min-width:0">
