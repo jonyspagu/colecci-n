@@ -599,7 +599,7 @@ const DDAT = {
     total:287},
   DB2:{label:"Dragon Ball 2 · 1997",saga:"Patrulla Roja · El Luchador Nam · La Bestia Yirán · Piccolo Ve Cumplido",
     holos:["Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo"],
-    holoNums:[1,33,40,60,74,81,107,139,153,166,173,212],
+    holoNums:[101,102,103,104,105,106,107,108,109,110,111,112],
     total:212},
   DBZ1:{label:"Dragon Ball Z 1 · 1998",saga:"Raditz · Nappa · Vegeta · Los Saiyajins llegan a la Tierra",
     holos:["Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo"],holoNums:[26,30,44,66,70,88,103,116,140,185,189,207],total:212},
@@ -987,17 +987,25 @@ function getItems(sub, alb){
     const a=alb||'DB1',d=DDAT[a];
     const hN=d.holoNums||[];
     const hI=d.holos.map((n,i)=>{const id=`${a}_h${i}`;let code;if(d.holoPrefix)code=`${d.holoPrefix}${i+1}`;else if(d.holoLetters)code=String.fromCharCode(65+i);else if(hN[i])code=String(hN[i]);else code=String(i+1);return{id,name:n,code,num:(d.holoLetters||d.holoPrefix)?code:(hN[i]?`#${hN[i]}`:`Holo #${i+1}`),holo:true,img:CUS[id]||HOLO_REAL[id]||null};});
-    const nCount=d.total-d.holos.length;
-    const nI=Array.from({length:nCount},(_,i)=>({id:`${a}_n${i+1}`,name:`Figurita #${i+1}`,num:`#${i+1}`}));
-    return [{l:d.holoLabel||`${d.holos.length} Holos Holográficas`,items:hI},{l:`${nCount} Figuritas Normales`,items:nI}];
+    let nI;
+    if(!d.holoLetters && !d.holoPrefix && hN.length){
+      const holoNumSet=new Set(hN);
+      nI=[];
+      for(let n=1;n<=d.total;n++){ if(holoNumSet.has(n))continue; nI.push({id:`${a}_n${n}`,name:`Figurita #${n}`,num:`#${n}`}); }
+    } else {
+      const nCount=d.total-d.holos.length;
+      nI=Array.from({length:nCount},(_,i)=>({id:`${a}_n${i+1}`,name:`Figurita #${i+1}`,num:`#${i+1}`}));
+    }
+    return [{l:d.holoLabel||`${d.holos.length} Holos Holográficas`,items:hI},{l:`${nI.length} Figuritas Normales`,items:nI}];
   }
   if(sub==='cdz_albums'){
     const a=alb||'CDZ1',d=CDAT[a];
     const hLabel=d.holoLabel||'Especiales';
     const hI=d.holos.map((n,i)=>{const id=`${a}_h${i}`;const nm=String(n).match(/^#?(\d+)$/);if(nm)return{id,name:`#${nm[1]}`,code:nm[1],num:`#${nm[1]}`,holo:true,img:null};const lt=String(n).match(/^([A-Za-z])$/);if(lt){const L=lt[1].toUpperCase();return{id,name:L,code:L,num:L,holo:true,img:null};}return{id,name:n,num:`#${i+1}`,holo:true,nameTile:true,img:null};});
-    const normCount=d.total-d.holos.length;
-    const nI=Array.from({length:normCount},(_,i)=>({id:`${a}_n${i+1}`,name:`Figurita #${i+1}`,num:`#${i+1}`}));
-    return [{l:hLabel,items:hI},{l:`${normCount} Figuritas Normales`,items:nI}];
+    const holoNumSet=new Set(d.holos.map(x=>String(x).match(/^#?(\d+)$/)).filter(Boolean).map(m=>parseInt(m[1],10)));
+    const nI=[];
+    for(let n=1;n<=d.total;n++){ if(holoNumSet.has(n))continue; nI.push({id:`${a}_n${n}`,name:`Figurita #${n}`,num:`#${n}`}); }
+    return [{l:hLabel,items:hI},{l:`${nI.length} Figuritas Normales`,items:nI}];
   }
   return [];
 }
