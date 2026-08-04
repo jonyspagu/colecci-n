@@ -66,6 +66,10 @@ body{background:radial-gradient(1200px 600px at 50% -10%,#232538 0%,var(--bg) 55
 .tool-btn:hover{border-color:var(--gold-dim);color:var(--gold)}
 .tool-btn.go{background:rgba(34,197,94,.14);border-color:#22c55e;color:#4ade80}
 .tool-btn.go:hover{background:rgba(34,197,94,.24);color:#4ade80}
+.tool-btn.copy{background:linear-gradient(135deg,var(--gold-dim),var(--gold));border-color:var(--gold);color:#1a1508;font-weight:800}
+.tool-btn.copy:hover{filter:brightness(1.1);color:#1a1508}
+.row-copy{background:rgba(212,180,92,.14);border:1px solid var(--gold-dim);color:var(--gold2);border-radius:8px;padding:5px 9px;font-size:14px;cursor:pointer;flex-shrink:0;transition:all .15s}
+.row-copy:hover{background:rgba(212,180,92,.28);border-color:var(--gold)}
 .tool-in{background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 14px;font-family:'Barlow',sans-serif;font-size:15px;outline:none;flex:1;min-width:150px;max-width:260px}
 .tool-in:focus{border-color:#22c55e}
 .tool-in::placeholder{color:var(--text3)}
@@ -895,16 +899,31 @@ function itemCode(it){
 }
 function itemLabel(it){ const c=itemCode(it); return c||String(it.name||''); }
 
-function copyMissing(){
-  const secs=getItems(curSub,curAlb);
+function missingListFor(sub,alb){
+  const specialsOnly = sub==='poke1'||sub==='poke2'||sub==='dbz_albums'||sub==='cdz_albums';
   const out=[];
-  secs.forEach(s=>{ s.items.forEach(it=>{ if(!ST[it.id]) out.push(itemLabel(it)); }); });
-  if(!out.length){ showSyncStatus('✓ ¡No te falta ninguna!'); setTimeout(()=>showSyncStatus(''),3000); return; }
-  const secName=(curSub==='dbz_albums'||curSub==='cdz_albums')&&curAlb?curAlb:curSub;
-  const txt='Faltantes '+secName+' ('+out.length+'): '+out.join(', ');
-  const done=()=>{ showSyncStatus('✓ Copiado: '+out.length+' faltantes'); setTimeout(()=>showSyncStatus(''),3000); };
+  for(const s of getItems(sub,alb)) for(const it of s.items){
+    if(specialsOnly && !it.holo) continue;
+    if(!ST[it.id]) out.push(itemLabel(it));
+  }
+  return out;
+}
+function copyText(txt,n){
+  const done=()=>{ showSyncStatus('✓ Copiado: '+n+' faltantes'); setTimeout(()=>showSyncStatus(''),3500); };
   if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done).catch(()=>{prompt('Copiá tus faltantes:',txt);}); }
   else { prompt('Copiá tus faltantes:',txt); }
+}
+function copyMissing(){
+  const out=missingListFor(curSub,curAlb);
+  const secName=(curSub==='dbz_albums'||curSub==='cdz_albums')&&curAlb?curAlb:curSub;
+  if(!out.length){ showSyncStatus('✓ ¡No te falta ninguna!'); setTimeout(()=>showSyncStatus(''),3000); return; }
+  copyText('Faltantes '+secName+' ('+out.length+'): '+out.join(', '), out.length);
+}
+function copyMissingFor(ev,sub,alb,name){
+  if(ev){ ev.stopPropagation(); }
+  const out=missingListFor(sub,alb);
+  if(!out.length){ showSyncStatus('✓ '+name+': ¡completa!'); setTimeout(()=>showSyncStatus(''),3000); return; }
+  copyText('Faltantes '+name+' ('+out.length+'): '+out.join(', '), out.length);
 }
 
 function quickMark(){
@@ -1159,7 +1178,7 @@ function render(){
 
   // toolbar: copiar faltantes + marcado rápido
   html+=`<div class="tools-row">
-    <button class="tool-btn" onclick="copyMissing()">📋 Copiar faltantes</button>
+    <button class="tool-btn copy" onclick="copyMissing()">📋 Copiar faltantes</button>
     <input class="tool-in" id="quickMark" placeholder="Marcar: 31,58,201" onkeydown="if(event.key==='Enter'){quickMark();return false;}">
     <button class="tool-btn go" onclick="quickMark()">✓ Marcar</button>
   </div>`;
@@ -1319,6 +1338,7 @@ function renderStats(){
         <div style="font-size:10px;color:${missing>0?'#f97316':'#22c55e'}">${missing===0?'✓ completa':missing<=3?`🔥 ¡${missing===1?'falta 1':'faltan '+missing}!`:`faltan ${missing}`}</div>
       </div>
       <div style="font-family:'Bebas Neue',sans-serif;font-size:14px;color:${col};min-width:36px;text-align:right">${pct}%</div>
+      ${missing>0?`<button class="row-copy" title="Copiar faltantes de ${sec.alb||sec.sub}" onclick="copyMissingFor(event,'${sec.sub}',${sec.alb?`'${sec.alb}'`:'null'},'${sec.alb||sec.sub}')">📋</button>`:`<div style="width:31px;flex-shrink:0"></div>`}
     </div>`;
   }
   html+='</div>';
