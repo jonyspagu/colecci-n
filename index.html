@@ -2,8 +2,16 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Colecciones Joni</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#13141d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Colecciones">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#13141d;--bg2:#1c1e2a;--bg3:#282a39;--gold:#d4b45c;--gold2:#f0d27a;--gold-dim:#8a7038;--text:#f2efe6;--text2:#bcb8ac;--text3:#847f74;--border:#353748;--border2:#474658;--holo:linear-gradient(135deg,#c084fc,#818cf8,#38bdf8,#34d399,#facc15,#f472b6,#c084fc);--r:10px;--poke:#f5c518;--dbz:#f97316;--cdz:#3b82f6;--sp:#a855f7}
@@ -1558,6 +1566,7 @@ function buildMainTabs(){
 
 buildMainTabs();setFr('stats');load();
 if(window.location.search.includes('readonly=1')){toggleReadOnly();}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}
 </script>
 </body>
 </html>
