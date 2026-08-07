@@ -643,9 +643,9 @@ const DDAT = {
   DBZ2:{label:"Dragon Ball Z 2 · 1998",saga:"Viaje a Namek · Dodoria & Zarbon · Fuerzas Especiales Ginyu · Freezer",
     holos:["Transp.","Transp.","Transp.","Transp.","Transp.","Transp.","Transp.","Transp.","Transp.","Transp.","Transp.","Transp."],holoLetters:true,holoLabel:"12 Transparentes · A a L",total:212},
   DBZ3:{label:"Dragon Ball Z 3 · 2000",saga:"Super Saiyajin · Freezer 3ra y 4ta forma · Batalla final en Namek",
-    holos:["Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo"],holoNums:[18,32,50,70,99,130,144,158,186,203,208,216],total:212},
+    holos:["Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo","Holo"],holoNums:[18,32,50,70,99,130,144,158,186,203,208,216],total:216},
   DBZ4:{label:"Dragon Ball Z 4 · 2001",saga:"Trunks del Futuro · Androides 16, 17, 18, 19 y 20 · Cell 1ra forma",
-    holos:["Holo","Holo","Holo","Holo","Holo","Holo"],holoNums:[31,43,58,171,201,216],total:212},
+    holos:["Holo","Holo","Holo","Holo","Holo","Holo"],holoNums:[31,43,58,171,201,216],total:216},
   DBZ5:{label:"Dragon Ball Z 5 · 2002",saga:"Torneo de Cell · Cell Perfecto · Gohan SSJ2 · Sacrificio de Goku",
     holos:Array(64).fill("Armable"),holoPrefix:"Z",holoLabel:"64 Armables Dorados · Z1 a Z64",total:264},
 };
@@ -916,6 +916,7 @@ function renderCurrent(){
   if(curFr==='stats') renderStats();
   else if(curFr==='feria') renderFeria();
   else render();
+  updateBadge();
 }
 
 function showSyncStatus(msg){
@@ -1058,6 +1059,8 @@ function countFr(fr){
   return{h,t};
 }
 function countAll(){let h=0,t=0;for(const fr of Object.keys(FRANCHISES)){const c=countFr(fr);h+=c.h;t+=c.t;}return{h,t};}
+function totalStat(){let h=0,t=0;for(const sec of getAllSections()){const c=countSectionStat(sec.sub,sec.alb);h+=c.h;t+=c.t;}return{h,t};}
+function updateBadge(){const g=totalStat();const b=document.getElementById('totalBadge');if(b)b.textContent=`${g.h} / ${g.t}`;}
 function countCur(){
   const sq=q.toLowerCase();
   let h=0,t=0;
@@ -1215,8 +1218,7 @@ function render(){
   const pct=t?Math.round(h/t*100):0;
   document.getElementById('progFill').style.width=pct+'%';
   document.getElementById('pctLbl').textContent=pct+'%';
-  const ga=countAll();
-  document.getElementById('totalBadge').textContent=`${ga.h} / ${ga.t}`;
+  updateBadge();
 
   let html='';
   const secs=getItems(curSub,curAlb);
