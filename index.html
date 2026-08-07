@@ -1038,7 +1038,7 @@ function getItems(sub, alb){
   if(sub==='cdz_albums'){
     const a=alb||'CDZ1',d=CDAT[a];
     const hLabel=d.holoLabel||'Especiales';
-    const hI=d.holos.map((n,i)=>{const id=`${a}_h${i}`;const nm=String(n).match(/^#?(\d+)$/);if(nm)return{id,name:`#${nm[1]}`,code:nm[1],num:`#${nm[1]}`,holo:true,img:null};const lt=String(n).match(/^([A-Za-z])$/);if(lt){const L=lt[1].toUpperCase();return{id,name:L,code:L,num:L,holo:true,img:null};}return{id,name:n,num:`#${i+1}`,holo:true,nameTile:true,img:null};});
+    const hI=d.holos.map((n,i)=>{const id=`${a}_h${i}`;const nm=String(n).match(/^#?(\d+)$/);if(nm)return{id,name:`#${nm[1]}`,code:nm[1],num:`#${nm[1]}`,holo:true,img:null};const lt=String(n).match(/^([A-Za-z])$/);if(lt){const L=lt[1].toUpperCase();return{id,name:L,code:L,num:L,holo:true,img:null};}const hg=String(n).match(/Holograma\s+([A-Za-z])/i);const code=hg?hg[1].toUpperCase():'';return{id,name:n,code,num:code||n,holo:true,nameTile:true,img:null};});
     const holoNumSet=new Set(d.holos.map(x=>String(x).match(/^#?(\d+)$/)).filter(Boolean).map(m=>parseInt(m[1],10)));
     const nI=[];
     for(let n=1;n<=d.total;n++){ if(holoNumSet.has(n))continue; nI.push({id:`${a}_n${n}`,name:`Figurita #${n}`,num:`#${n}`}); }
@@ -1278,15 +1278,27 @@ function countSection(sub,alb){
   for(const s of getItems(sub,alb))for(const it of s.items){t++;if(ST[it.id])h++;}
   return{h,t,pct:t?Math.round(h/t*100):0};
 }
-// Conteo para el RESUMEN: en álbumes cuenta solo especiales (holos/dorados/transp), no las figuritas normales
+// En álbumes coleccionamos solo especiales (holos/dorados/transp), no las figuritas normales
+function specialsOnlySub(sub){ return sub==='poke1'||sub==='poke2'||sub==='dbz_albums'||sub==='cdz_albums'; }
+// Conteo para el RESUMEN
 function countSectionStat(sub,alb){
-  const specialsOnly = sub==='poke1'||sub==='poke2'||sub==='dbz_albums'||sub==='cdz_albums';
+  const specialsOnly = specialsOnlySub(sub);
   let h=0,t=0;
   for(const s of getItems(sub,alb))for(const it of s.items){
     if(specialsOnly && !it.holo) continue;
     t++; if(ST[it.id]) h++;
   }
   return{h,t,pct:t?Math.round(h/t*100):0};
+}
+// Ítems faltantes que efectivamente coleccionás (para Feria y export)
+function missingItems(sub,alb){
+  const specialsOnly = specialsOnlySub(sub);
+  const out=[];
+  for(const s of getItems(sub,alb))for(const it of s.items){
+    if(specialsOnly && !it.holo) continue;
+    if(!ST[it.id]) out.push(it);
+  }
+  return out;
 }
 
 function frColor(fr){
@@ -1400,8 +1412,8 @@ function renderFeria(){
   document.getElementById('albTabs').style.display='none';
 
   const sections = getAllSections();
-  const {h,t} = countAll();
-  document.getElementById('statNums').innerHTML=`<span style="color:#f97316">${t-h}</span> <span style="font-size:13px;color:var(--text3)">faltan</span>`;
+  let missTotal=0; for(const sec of sections){const c=countSectionStat(sec.sub,sec.alb);missTotal+=(c.t-c.h);}
+  document.getElementById('statNums').innerHTML=`<span style="color:#f97316">${missTotal}</span> <span style="font-size:13px;color:var(--text3)">faltan</span>`;
   document.getElementById('progFill').style.width='0%';
   document.getElementById('pctLbl').textContent='';
 
@@ -1438,7 +1450,7 @@ function renderFeria(){
   let totalMissing = 0;
 
   for(const sec of filteredSections){
-    const items = getItems(sec.sub, sec.alb).flatMap(s => s.items).filter(it => !ST[it.id]);
+    const items = missingItems(sec.sub, sec.alb);
     if(items.length === 0) continue;
     totalMissing += items.length;
     const col = frColor(sec.fr);
@@ -1502,10 +1514,10 @@ function exportFeria(){
   let totalMissing = 0;
 
   for(const sec of filteredSections){
-    const items = getItems(sec.sub, sec.alb).flatMap(s => s.items).filter(it => !ST[it.id]);
+    const items = missingItems(sec.sub, sec.alb);
     if(items.length === 0) continue;
     totalMissing += items.length;
-    
+
     lines.push(`📌 ${sec.label} (faltan ${items.length})`);
     
     const holos = sec.sub==='lenti' ? [] : items.filter(it => it.holo);
