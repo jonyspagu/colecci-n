@@ -32,6 +32,7 @@ body{background:radial-gradient(1200px 600px at 50% -10%,#232538 0%,var(--bg) 55
 .mtab.dbz.active{background:var(--dbz);border-color:var(--dbz);color:#fff}
 .mtab.cdz.active{background:var(--cdz);border-color:var(--cdz);color:#fff}
 .mtab.sp.active{background:var(--sp);border-color:var(--sp);color:#fff}
+.mtab.chester.active{background:#dc2626;border-color:#dc2626;color:#fff}
 .mtab.poke:not(.active):hover{color:#fca5a5;border-color:var(--poke)}
 .mtab.dbz:not(.active):hover{color:#fed7aa;border-color:var(--dbz)}
 .mtab.cdz:not(.active):hover{color:#bfdbfe;border-color:var(--cdz)}
@@ -744,6 +745,12 @@ const FRANCHISES = {
       cdz_albums:{label:"Álbumes CDZ",  icon:"⚔️"},
     }
   },
+  chester: {
+    label: "Chester", fr: "chester",
+    subs: {
+      chester:{label:"Por el mundo", icon:"🐆"},
+    }
+  },
 
   stats: {
     label: "⬡ Resumen", fr: "stats",
@@ -1011,6 +1018,10 @@ function getItems(sub, alb){
   if(sub==='tazos1')   return [{l:null,items:TAZOS1}];
   if(sub==='tazos2')   return [{l:null,items:TAZOS2}];
   if(sub==='lenti')    return [{l:'Lenticulares 3D · Cadenas Evolutivas · Kanto',items:LENTI_NEW.map(it=>({...it,nameTile:true}))}];
+  if(sub==='chester')  return [
+    {l:'41 Tazos 3D · Chester por el mundo',items:Array.from({length:41},(_,i)=>({id:`ch_${i+1}`,name:`#${i+1}`,num:`#${i+1}`}))},
+    {l:'Tazo Ganador (el difícil)',items:[{id:'ch_win',name:'🏆 Tazo Ganador',num:'Ganador',holo:true,nameTile:true}]}
+  ];
   if(sub==='giga')     return [{l:null,items:GIGA.map(([n,i])=>({id:`giga_${i}`,name:n,num:`#${String(i).padStart(3,'0')} · ${n}`}))}];
   if(sub==='poke1')    return [
     {l:'8 Holos Especiales Brillantes',items:PK1_HOLOS.map(it=>({...it,img:HOLO_REAL[it.id]||null}))},
@@ -1246,7 +1257,7 @@ function render(){
     } else if(curSub==='postales'){
       const tiles=sec.items.map(renderPostalTile).filter(Boolean).join('');
       html+=tiles?`<div class="postal-grid">${tiles}</div>`:`<div class="empty">Nada que mostrar</div>`;
-    } else if(curSub==='tazos1'||curSub==='tazos2'||curSub==='giga'||curSub==='lenti'||curSub==='dbz_albums'||curSub==='cdz_albums'){
+    } else if(curSub==='tazos1'||curSub==='tazos2'||curSub==='giga'||curSub==='lenti'||curSub==='dbz_albums'||curSub==='cdz_albums'||curSub==='chester'){
       const tiles=sec.items.map(renderNumTile).filter(Boolean).join('');
       html+=tiles?`<div class="num-grid">${tiles}</div>`:`<div class="empty">Nada que mostrar</div>`;
     } else if(useTable || forceTable){
@@ -1272,6 +1283,7 @@ function getAllSections(){
   Object.keys(DDAT).forEach(a=>sections.push({fr:'dbz',label:DDAT[a].label+' — '+DDAT[a].saga, sub:'dbz_albums', alb:a}));
   sections.push({fr:'dbz',label:'Dragon Ball · Sobre Plateado (1999) · Muñecos y Tarjetas', sub:'sp', alb:null});
   Object.keys(CDAT).forEach(a=>sections.push({fr:'cdz',label:CDAT[a].label+' — '+CDAT[a].saga, sub:'cdz_albums', alb:a}));
+  sections.push({fr:'chester',label:'Chester por el mundo · 41 tazos + Ganador', sub:'chester', alb:null});
   return sections;
 }
 
@@ -1304,7 +1316,7 @@ function missingItems(sub,alb){
 }
 
 function frColor(fr){
-  return fr==='poke'?'#f5c518':fr==='dbz'?'#ea580c':fr==='cdz'?'#2563eb':'#9333ea';
+  return fr==='poke'?'#f5c518':fr==='dbz'?'#ea580c':fr==='cdz'?'#2563eb':fr==='chester'?'#dc2626':'#9333ea';
 }
 
 function renderStats(){
@@ -1426,6 +1438,7 @@ function renderFeria(){
     {key:'dbz',  label:'Dragon Ball'},
     {key:'cdz',  label:'CDZ'},
     {key:'sp',   label:'Sobre Plateado'},
+    {key:'chester', label:'Chester'},
   ];
   
   let filterHtml = `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;align-items:center">
