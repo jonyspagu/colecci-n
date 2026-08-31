@@ -144,6 +144,15 @@ tr.have .row-num{color:#4ade80}
 .feria-bar{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:7px;padding:6px 12px;font-size:11px;color:#fca5a5;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .dot{width:6px;height:6px;border-radius:50%;background:#ef4444;flex-shrink:0;animation:pulse 1.5s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes confetti-fall{to{top:110%}}
+@keyframes confetti-spin{to{transform:rotate(720deg)}}
+@keyframes celebrate-pop{0%{transform:translate(-50%,-50%) scale(.3);opacity:0}55%{transform:translate(-50%,-50%) scale(1.18);opacity:1}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
+@keyframes celebrate-out{to{opacity:0}}
+.celebrate-ov{position:fixed;inset:0;z-index:9999;pointer-events:none;overflow:hidden;animation:celebrate-out .6s 2.9s forwards}
+.confetti{position:absolute;top:-24px;border-radius:2px;opacity:.95;animation:confetti-fall linear forwards}
+.confetti>i{display:block;width:100%;height:100%;background:inherit;border-radius:2px;animation:confetti-spin linear infinite}
+.celebrate-msg{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:2px;color:#f0d27a;text-align:center;text-shadow:0 3px 24px rgba(0,0,0,.7);animation:celebrate-pop .55s ease-out;white-space:nowrap}
+.celebrate-msg small{display:block;font-size:16px;color:#4ade80;letter-spacing:3px;margin-top:6px}
 .empty{text-align:center;padding:30px;color:var(--text3);font-size:13px}
 .postal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:10px;padding:6px 0}
 .postal-tile{cursor:pointer;aspect-ratio:1;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid var(--border);background:#242636;transition:transform .12s,border-color .12s;user-select:none}
@@ -975,6 +984,7 @@ function copyMissingFor(ev,sub,alb,name){
 function quickMark(){
   const el=document.getElementById('quickMark'); if(!el) return;
   const str=el.value.trim(); if(!str){ return; }
+  const wasComplete=currentComplete();
   const secs=getItems(curSub,curAlb);
   const map={};
   secs.forEach(s=>s.items.forEach(it=>{ const c=itemCode(it).toUpperCase(); if(c&&!(c in map)) map[c]=it.id; }));
@@ -984,17 +994,33 @@ function quickMark(){
     if(id){ if(!ST[id]){ ST[id]=true; fetch(API+'?action=toggle&id='+encodeURIComponent(id)+'&value=true').catch(()=>{}); } done++; }
     else miss.push(t); });
   save(); render();
+  if(done && !wasComplete && currentComplete()) celebrate(currentSectionName());
   const q2=document.getElementById('quickMark'); if(q2) q2.value='';
   showSyncStatus('✓ '+done+' marcadas'+(miss.length?' · no encontré: '+miss.join(', '):''));
   setTimeout(()=>showSyncStatus(''),5000);
 }
 
+function currentComplete(){const c=countSectionStat(curSub,curAlb);return c.t>0&&c.h===c.t;}
+function currentSectionName(){if(curAlb)return curAlb;for(const fr of Object.values(FRANCHISES)){if(fr.subs&&fr.subs[curSub])return fr.subs[curSub].label;}return 'Colección';}
+function celebrate(name){
+  if(document.querySelector('.celebrate-ov')) return;
+  const ov=document.createElement('div'); ov.className='celebrate-ov';
+  const colors=['#d4b45c','#f0d27a','#22c55e','#3b82f6','#e2564a','#a855f7','#f97316'];
+  let html='';
+  for(let i=0;i<90;i++){const c=colors[i%colors.length];const left=Math.random()*100;const w=6+Math.random()*7;const dur=(2.2+Math.random()*1.8).toFixed(2);const delay=(Math.random()*0.6).toFixed(2);
+    html+=`<div class="confetti" style="left:${left}%;width:${w}px;height:${(w*1.5).toFixed(0)}px;background:${c};animation-duration:${dur}s;animation-delay:${delay}s"><i style="animation-duration:${(0.6+Math.random()).toFixed(2)}s"></i></div>`;}
+  html+=`<div class="celebrate-msg">🏆 ¡${name} completa!<small>¡FELICITACIONES!</small></div>`;
+  ov.innerHTML=html; document.body.appendChild(ov);
+  setTimeout(()=>ov.remove(),3600);
+}
 function tog(id){
   if(readOnly) return;
   const val = !ST[id];
+  const wasComplete = currentComplete();
   ST[id] = val;
   save();
   render();
+  if(val && !wasComplete && currentComplete()) celebrate(currentSectionName());
   const url = API+'?action=toggle&id='+encodeURIComponent(id)+'&value='+val;
   showSyncStatus('⟳ Guardando...');
   fetch(url)
@@ -1032,7 +1058,7 @@ function getItems(sub, alb){
     {l:'8 Holos Especiales Brillantes · Medallas de la Liga',items:PK2_HOLOS.map(it=>({...it,img:HOLO_REAL[it.id]||null}))},
     {l:'Figuritas Normales · Johto',items:JOHTO.map(([n,i])=>({id:`pk2_${i}`,name:n,num:`#${String(i).padStart(3,'0')}`,img:PA(i)}))}
   ];
-  if(sub==='sp')       return [{l:'Muñecos · 36 piezas',items:SP_M},{l:'Tarjetas · 18 piezas',items:SP_T}];
+  if(sub==='sp')       return [{l:'Muñecos · 36 piezas',items:SP_M}];
   if(sub==='dbz_albums'){
     const a=alb||'DB1',d=DDAT[a];
     const hN=d.holoNums||[];
@@ -1282,7 +1308,7 @@ function getAllSections(){
   sections.push({fr:'poke',label:'Pokémon · Álbum 1 (1999 Navarrete) · ¡Atrápalo Ya!', sub:'poke1',    alb:null});
   sections.push({fr:'poke',label:'Pokémon · Álbum 2 (2000 Navarrete) · Medallas Liga',  sub:'poke2',    alb:null});
   Object.keys(DDAT).forEach(a=>sections.push({fr:'dbz',label:DDAT[a].label+' — '+DDAT[a].saga, sub:'dbz_albums', alb:a}));
-  sections.push({fr:'dbz',label:'Dragon Ball · Sobre Plateado (1999) · Muñecos y Tarjetas', sub:'sp', alb:null});
+  sections.push({fr:'dbz',label:'Dragon Ball · Sobre Plateado (1999) · Muñecos', sub:'sp', alb:null});
   Object.keys(CDAT).forEach(a=>sections.push({fr:'cdz',label:CDAT[a].label+' — '+CDAT[a].saga, sub:'cdz_albums', alb:a}));
   sections.push({fr:'chester',label:'Chester por el mundo · 41 tazos + Ganador', sub:'chester', alb:null});
   return sections;
